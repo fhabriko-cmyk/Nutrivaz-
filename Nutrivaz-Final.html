@@ -2,9 +2,7 @@
 <html lang="pt-BR" data-theme="light">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Nutrivaz — Gestão de Alimentação</title>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -66,8 +64,7 @@ body{display:flex;flex-direction:column;}
 .btn-theme:hover{background:rgba(255,255,255,.16);}
 
 /* NAV */
-.nav{background:var(--nav-bg);display:flex;padding:0 20px;gap:2px;flex-shrink:0;overflow-x:auto;-webkit-overflow-scrolling:touch;border-bottom:2px solid var(--org);scrollbar-width:none;}
-.nav::-webkit-scrollbar{display:none;}
+.nav{background:var(--nav-bg);display:flex;padding:0 20px;gap:2px;flex-shrink:0;overflow-x:auto;border-bottom:2px solid var(--org);}
 .nb{padding:11px 14px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);border:none;background:transparent;cursor:pointer;border-bottom:3px solid transparent;font-family:var(--font);white-space:nowrap;transition:all .15s;margin-bottom:-2px;}
 .nb:hover{color:rgba(255,255,255,.8);}
 .nb.on{color:#fff;border-bottom-color:var(--org);background:rgba(255,255,255,.06);}
@@ -107,7 +104,6 @@ body{display:flex;flex-direction:column;}
 
 /* TABLE */
 .twrap{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px;}
-.twrap > div{overflow-x:auto;-webkit-overflow-scrolling:touch;}
 .thead-bar{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bdr);gap:8px;flex-wrap:wrap;background:var(--bg2);}
 .thead-bar h2{font-size:13px;font-weight:700;color:var(--navy);}
 [data-theme="dark"] .thead-bar h2{color:var(--org3);}
@@ -149,7 +145,7 @@ tr:hover td{background:var(--org-dim);}
 /* MODAL */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center;padding:16px;}
 .modal-overlay.open{display:flex;}
-.modal{background:var(--modal-bg);border-radius:14px;width:660px;max-width:100%;max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch;box-shadow:0 20px 60px rgba(0,0,0,.3);border-top:4px solid var(--org);}
+.modal{background:var(--modal-bg);border-radius:14px;width:660px;max-width:100%;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);border-top:4px solid var(--org);}
 .mh{padding:14px 18px 10px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--modal-bg);z-index:1;border-bottom:1px solid var(--bdr);}
 .mh h3{font-size:14px;font-weight:700;color:var(--navy);}
 [data-theme="dark"] .mh h3{color:var(--org3);}
@@ -159,7 +155,7 @@ tr:hover td{background:var(--org-dim);}
 .frow2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
 .frow3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;}
 .fl{display:block;font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
-.fi{width:100%;padding:8px 10px;border:1px solid var(--bdr2);border-radius:7px;background:var(--input-bg);color:var(--tx);font-size:13px;font-family:var(--font);-webkit-appearance:none;appearance:none;touch-action:manipulation;}
+.fi{width:100%;padding:8px 10px;border:1px solid var(--bdr2);border-radius:7px;background:var(--input-bg);color:var(--tx);font-size:13px;font-family:var(--font);}
 .fi:focus{outline:none;border-color:var(--org);background:var(--card-bg);}
 textarea.fi{min-height:65px;resize:vertical;}
 .fm{margin-bottom:12px;}
@@ -252,115 +248,16 @@ textarea.fi{min-height:65px;resize:vertical;}
 .km-result{background:var(--org-dim);border:1px solid var(--org3);border-radius:8px;padding:9px 12px;font-size:12px;font-weight:700;color:var(--org2);display:none;}
 .alert-low{background:var(--red-dim);border:1px solid #FECACA;border-radius:8px;padding:10px 14px;font-size:12px;color:var(--red);font-weight:600;margin-bottom:12px;display:flex;align-items:center;gap:8px;}
 
-/* ══ RESPONSIVO MOBILE ══ */
-
-/* Tablet (até 900px) */
-@media(max-width:900px){
-  .kpi-row{grid-template-columns:repeat(3,1fr);}
-  .emp-grid{grid-template-columns:repeat(2,1fr);}
-  .chart-row-3{grid-template-columns:1fr 1fr;}
-}
-
-/* Mobile (até 768px) */
 @media(max-width:768px){
-  /* Layout geral */
-  .main{padding:12px 10px;}
-
-  /* Topbar */
-  .topbar{padding:0 12px;height:54px;}
-  .tb-brand{font-size:14px;}
-  .tb-sub{display:none;}
-  .tb-date{display:none;}
-  .tb-badge{display:none;}
-  .tb-user-name{display:none;}
-  .btn-theme{padding:5px 7px;font-size:13px;}
-
-  /* Nav — scroll horizontal */
-  .nav{padding:0 8px;gap:0;}
-  .nb{padding:9px 10px;font-size:10px;}
-
-  /* KPIs */
-  .kpi-row{grid-template-columns:repeat(2,1fr);gap:8px;}
-  .kpi-row-3{grid-template-columns:repeat(2,1fr);gap:8px;}
-  .kpi-row-4{grid-template-columns:repeat(2,1fr);gap:8px;}
-  .kpi{padding:10px 12px;}
-  .kpi-val{font-size:22px;}
-
-  /* Total box */
-  .total-box{padding:12px;}
-  .total-box-grid{grid-template-columns:repeat(2,1fr);gap:8px;}
-  .total-num{font-size:18px;}
-
-  /* Charts */
+  .kpi-row{grid-template-columns:repeat(2,1fr);}
+  .kpi-row-3{grid-template-columns:repeat(2,1fr);}
+  .kpi-row-4{grid-template-columns:repeat(2,1fr);}
+  .total-box-grid{grid-template-columns:repeat(2,1fr);}
   .chart-row,.chart-row-3{grid-template-columns:1fr;}
-
-  /* Grids */
-  .alim-grid,.est-grid{grid-template-columns:1fr 1fr;}
-  .emp-grid{grid-template-columns:1fr;}
-
-  /* Formulários */
+  .alim-grid,.est-grid,.emp-grid{grid-template-columns:repeat(2,1fr);}
   .frow2,.frow3{grid-template-columns:1fr;}
-  .frow{flex-direction:column;align-items:stretch;}
-  .frow select,.frow input[type=text],.frow input[type=date],.frow input[type=month]{width:100%;font-size:13px;}
-
-  /* Tabelas — scroll horizontal */
-  .table-wrapper,.twrap{overflow-x:auto;-webkit-overflow-scrolling:touch;}
-  table{min-width:480px;font-size:11px;}
-  th,td{padding:7px 8px;}
-
-  /* Thead bar */
-  .thead-bar{flex-direction:column;align-items:stretch;gap:8px;}
-  .thead-bar h2{font-size:13px;}
-
-  /* Botões */
-  .btn{font-size:11px;padding:6px 12px;}
-  .btn-sec{font-size:11px;padding:5px 10px;}
-
-  /* Modal — ocupa tela inteira em mobile */
-  .modal-overlay{padding:0;align-items:flex-end;}
-  .modal{width:100%;max-width:100%;border-radius:16px 16px 0 0;max-height:92vh;}
-  .mh{border-radius:16px 16px 0 0;}
-
-  /* Login */
-  .login-box{padding:24px 18px;}
-  .login-logo h1{font-size:20px;}
-
-  /* Sec title */
-  .sec-title{font-size:13px;}
-
-  /* Config card */
-  .cfg-card{padding:14px;}
-
-  /* Estoque cards */
-  .est-card{padding:12px;}
-
-  /* Empresa cards */
-  .emp-card{padding:12px;}
-
-  /* Filtro bar */
-  .filtro-bar{gap:6px;}
-  .filtro-btn{padding:4px 10px;font-size:10px;}
-
-  /* Seção de usuários */
-  .user-card{flex-direction:column;align-items:flex-start;gap:8px;}
 }
-
-/* Mobile pequeno (até 420px) */
-@media(max-width:420px){
-  .kpi-row{grid-template-columns:1fr 1fr;}
-  .alim-grid,.est-grid{grid-template-columns:1fr;}
-  .total-box-grid{grid-template-columns:1fr 1fr;}
-  .tb-logo{width:34px;height:34px;}
-  .nb{padding:8px 8px;font-size:9px;}
-  .main{padding:10px 8px;}
-}
-/* ── CONTROLE DE PERMISSÕES ── */
-body.role-user .admin-only { display: none !important; }
-body.role-user .admin-nav  { display: none !important; }
-body.role-user td.admin-only, body.role-user th.admin-only { display: none !important; }
-
 </style>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
 
@@ -372,7 +269,7 @@ body.role-user td.admin-only, body.role-user th.admin-only { display: none !impo
       <h1>Nutrivaz</h1>
       <p>Gestão de Alimentação</p>
     </div>
-    <div class="login-error" id="loginErr" style="display:none"></div>
+    <div class="login-error" id="loginErr">Usuário ou senha incorretos.</div>
     <div class="login-field">
       <label>Usuário</label>
       <input type="text" id="loginUser" placeholder="seu.usuario" autocapitalize="none">
@@ -420,7 +317,7 @@ body.role-user td.admin-only, body.role-user th.admin-only { display: none !impo
   <button class="nb"     id="nb-estoque"   onclick="go('estoque')">📦 Estoque</button>
   <button class="nb"     id="nb-logistica" onclick="go('logistica')">🚛 Logística</button>
   <button class="nb"     id="nb-empresas"  onclick="go('empresas')">🏢 Empresas</button>
-  <button class="nb admin-nav"     id="nb-relatorios"onclick="go('relatorios')">📄 Relatórios</button>
+  <button class="nb"     id="nb-relatorios"onclick="go('relatorios')">📄 Relatórios</button>
   <button class="nb hidden" id="nb-usuarios" onclick="go('usuarios')">👥 Usuários</button>
   <button class="nb"     id="nb-config"    onclick="go('config')">⚙️ Config</button>
 </nav>
@@ -443,7 +340,7 @@ body.role-user td.admin-only, body.role-user th.admin-only { display: none !impo
       <div class="total-item"><div class="total-num" id="pAlmoco">0</div><div class="total-lbl">Almoços</div></div>
       <div class="total-item"><div class="total-num" id="pJanta">0</div><div class="total-lbl">Jantas (HOSS)</div></div>
       <div class="total-item"><div class="total-num" id="pExtras">0</div><div class="total-lbl">Extras Pagos</div></div>
-      <div class="total-item admin-only"><div class="total-num" id="pValor">R$0</div><div class="total-lbl">Valor Total</div></div>
+      <div class="total-item"><div class="total-num" id="pValor">R$0</div><div class="total-lbl">Valor Total</div></div>
     </div>
   </div>
   <div class="kpi-row">
@@ -627,7 +524,7 @@ body.role-user td.admin-only, body.role-user th.admin-only { display: none !impo
         <label class="btn-sec" style="cursor:pointer">Trocar logo<input type="file" accept="image/*" style="display:none" onchange="trocarLogo(event)"></label>
       </div>
     </div>
-    <div class="frow3 admin-only">
+    <div class="frow3">
       <div class="fm"><label class="fl">Valor padrão Café (R$)</label><input class="fi" id="cfgValCafe" type="number" step="0.01" placeholder="Ex: 8.00"></div>
       <div class="fm"><label class="fl">Valor padrão Almoço (R$)</label><input class="fi" id="cfgValAlm" type="number" step="0.01" placeholder="Ex: 18.50"></div>
       <div class="fm"><label class="fl">Valor padrão Janta (R$)</label><input class="fi" id="cfgValJan" type="number" step="0.01" placeholder="Ex: 18.50"></div>
@@ -672,100 +569,6 @@ body.role-user td.admin-only, body.role-user th.admin-only { display: none !impo
 
 <script>
 // ══════════════════════════════════════════════════════════════════
-// SUPABASE
-// ══════════════════════════════════════════════════════════════════
-const SUPA_URL = 'https://gjyuklsxpqudflqspggc.supabase.co';
-const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdqeXVrbHN4cHF1ZGZscXNwZ2djIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzkyOTYzMjAsImV4cCI6MjA5NDg3MjMyMH0.6XImCD0m4kFseU4NIr-iJ2zcrcIB8SudXdpOXaOZkZE';
-const supa = supabase.createClient(SUPA_URL, SUPA_KEY);
-
-async function sbGet(table, filters){
-  var q = supa.from(table).select('*');
-  if(filters) Object.keys(filters).forEach(k => { q = q.eq(k, filters[k]); });
-  var res = await q.order('id', {ascending: false});
-  if(res.error){ console.error('GET '+table, res.error); return []; }
-  return res.data || [];
-}
-async function sbInsert(table, row){
-  var res = await supa.from(table).insert(row);
-  if(res.error) console.error('INSERT '+table, res.error);
-  return res;
-}
-async function sbUpdate(table, id, data){
-  var res = await supa.from(table).update(data).eq('id', id);
-  if(res.error) console.error('UPDATE '+table, res.error);
-  return res;
-}
-async function sbDelete(table, id){
-  var res = await supa.from(table).delete().eq('id', id);
-  if(res.error) console.error('DELETE '+table, res.error);
-  return res;
-}
-async function sbUpsert(table, row){
-  var res = await supa.from(table).upsert(row);
-  if(res.error) console.error('UPSERT '+table, res.error);
-  return res;
-}
-
-async function carregarTudo(){
-  showToast('⏳ Conectando ao servidor...');
-  console.log('Iniciando carregarTudo...');
-  try {
-    // Timeout de 10 segundos para não travar o login se o Supabase demorar
-    const timeout = (ms) => new Promise((_, reject) => setTimeout(() => reject(new Error('Timeout Supabase')), ms));
-    
-    var [emps, refs, cafes, alims, logs, ests, estmovs, cfgs, users] = await Promise.race([
-      Promise.all([
-        sbGet('nv_empresas'), sbGet('nv_refeicoes'), sbGet('nv_cafe'),
-        sbGet('nv_alimentos'), sbGet('nv_logistica'), sbGet('nv_estoque'),
-        sbGet('nv_estoque_mov'), sbGet('nv_config'), sbGet('nv_usuarios')
-      ]),
-      timeout(10000)
-    ]);
-    console.log('Dados carregados do Supabase.');
-
-    emps=emps||[]; refs=refs||[]; cafes=cafes||[]; alims=alims||[]; logs=logs||[]; ests=ests||[]; estmovs=estmovs||[]; cfgs=cfgs||[]; users=users||[];
-
-    EMP = emps.map(e => ({id:e.id, nome:e.nome, tipo:e.tipo||'', contato:e.contato||'', obs:e.obs||''}));
-
-    REF = refs.map(r => ({id:r.id, data:r.data, empresa:r.empresa,
-      funcNutrivaz:r.func_nutrivaz||0, funcAlm:r.func_alm||0,
-      qtdAlm:r.qtd_alm||0, qtdExt:r.qtd_ext||0, valAlm:r.val_alm||0,
-      qtdJan:r.qtd_jan||0, valJan:r.val_jan||0, valExt:r.val_ext||0, obs:r.obs||''}));
-
-    CAFE = cafes.map(c => ({id:c.id, data:c.data, empresa:c.empresa,
-      qtd:c.qtd||0, valCafe:c.val_cafe||0, itens:c.itens||'', obs:c.obs||''}));
-
-    ALIM = alims.map(a => ({id:a.id, data:a.data, nome:a.nome,
-      qtd:a.qtd||0, unidade:a.unidade||'kg', perda:a.perda||0, obs:a.obs||''}));
-
-    LOG = logs.map(l => ({id:l.id, data:l.data, veiculo:l.veiculo||'—',
-      motorista:l.motorista||'—', kmSaida:l.km_saida||0, kmChegada:l.km_chegada||0,
-      kmRodado:l.km_rodado||'0', destino:l.destino||'', obs:l.obs||''}));
-
-    EST = ests.map(e => ({id:e.id, nome:e.nome, categoria:e.categoria||'',
-      qtdAtual:e.qtd_atual||0, qtdMinima:e.qtd_minima||0, unidade:e.unidade||'kg', obs:e.obs||''}));
-
-    window._ESTMOV = estmovs.map(m => ({id:m.id, data:m.data, nome:m.nome,
-      tipo:m.tipo, qtd:m.qtd||0, unidade:m.unidade||'', saldoApos:m.saldo_apos||0, obs:m.obs||''}));
-
-    window._nsUsuarios = users;
-
-    if(cfgs && cfgs.length > 0){
-      var c = cfgs[0];
-      CFG = {nome:c.nome||'Nutrivaz', obra:c.obra||'', logo:c.logo||'',
-        valCafe:c.val_cafe||0, valAlm:c.val_alm||0, valJan:c.val_jan||0};
-      aplicarConfig();
-    }
-
-    showToast('✓ Sistema conectado!');
-  } catch(e) {
-    console.error('Erro ao carregar:', e);
-    showToast('❌ Erro ao conectar!');
-  }
-}
-
-
-// ══════════════════════════════════════════════════════════════════
 // ESTADO
 // ══════════════════════════════════════════════════════════════════
 var REF=[], CAFE=[], ALIM=[], LOG=[], EMP=[], EST=[], USERS=[], CI={};
@@ -791,126 +594,47 @@ var hoje=new Date().toISOString().slice(0,10);
 // AUTENTICAÇÃO
 // ══════════════════════════════════════════════════════════════════
 function getUsuarios(){
-  var users = window._nsUsuarios || [];
-  if(!users.find(function(u){return u.login==='admin';})){
-    users.unshift({id:'u0',login:'admin',senha:'nutrivaz123',nome:'Administrador',role:'admin'});
+  var saved=JSON.parse(localStorage.getItem('nv_USERS')||'[]');
+  // Garantir usuários padrão
+  if(!saved.find(function(u){return u.login==='admin';})){
+    saved.unshift({id:'u0',login:'admin',senha:'nutrivaz123',nome:'Administrador',role:'admin'});
   }
-  return users;
+  if(!saved.find(function(u){return u.login==='dev';})){
+    saved.push({id:'u_dev',login:'dev',senha:'dev2024',nome:'Desenvolvedor',role:'dev'});
+  }
+  return saved;
 }
 
-async function doLogin(){
+function doLogin(){
   var login=document.getElementById('loginUser').value.trim().toLowerCase();
   var senha=document.getElementById('loginPass').value;
-  var errEl=document.getElementById('loginErr');
-
   if(!login||!senha){
-    errEl.style.display='block';
-    errEl.textContent='Preencha usuário e senha.';return;
+    document.getElementById('loginErr').style.display='block';
+    document.getElementById('loginErr').textContent='Preencha usuário e senha.';return;
   }
-
-  // Mostrar loading
-  errEl.style.display='block';
-  errEl.style.background='#EFF3F7';
-  errEl.style.color='#374151';
-  errEl.textContent='🔄 Verificando...';
-
-  try {
-    // Fallback imediato para admin padrão (Master Access)
-    if(login==='admin' && senha==='nutrivaz123'){
-      var adminPadrao = {id:'u0',login:'admin',senha:'nutrivaz123',nome:'Administrador',role:'admin'};
-      window._nsUsuarios = [adminPadrao];
-      loginSucesso(adminPadrao);
-      return;
-    }
-
-    // Buscar direto do Supabase — garante dados atualizados
-    var res = await supa.from('nv_usuarios').select('*');
-    var users = res.data || [];
-    
-    // Filtrar admin do banco para não duplicar com o mestre local
-    window._nsUsuarios = (users || []).filter(function(u){return u.login!=='admin';});
-
-    var user = users.find(function(u){
-      return u.login.toLowerCase()===login && u.senha===senha;
-    });
-
-    if(!user){
-      errEl.style.background='#FEE2E2';
-      errEl.style.color='#DC2626';
-      errEl.style.display='block';
-      errEl.textContent='Usuário ou senha incorretos.';
-      document.getElementById('loginPass').value='';
-      return;
-    }
-
-    loginSucesso(user);
-
-  } catch(err) {
-    console.error('Erro login:', err);
-    // Mesmo com erro de rede, permitir admin padrão
-    if(login==='admin' && senha==='nutrivaz123'){
-      var adminPadrao = {id:'u0',login:'admin',senha:'nutrivaz123',nome:'Administrador',role:'admin'};
-      window._nsUsuarios = [adminPadrao];
-      loginSucesso(adminPadrao);
-    } else {
-      errEl.style.background='#FEE2E2';
-      errEl.style.color='#DC2626';
-      errEl.style.display='block';
-      errEl.textContent='Erro de conexão. Tente novamente.';
-    }
+  var users=getUsuarios();
+  var user=users.find(function(u){return u.login.toLowerCase()===login&&u.senha===senha;});
+  if(!user){
+    document.getElementById('loginErr').style.display='block';
+    document.getElementById('loginErr').textContent='Usuário ou senha incorretos.';
+    document.getElementById('loginPass').value='';return;
   }
-}
-
-function loginSucesso(user){
-  console.log('Login bem-sucedido para:', user.login);
-  var errEl=document.getElementById('loginErr');
-  if(errEl) errEl.style.display='none';
-  
+  document.getElementById('loginErr').style.display='none';
   authUser=user;
-  document.body.className = 'role-' + user.role;
-  
-  var loginWrap = document.getElementById('loginWrap');
-  if(loginWrap) loginWrap.style.setProperty('display', 'none', 'important');
-  
-  var appWrap = document.getElementById('appWrap');
-  if(appWrap) {
-    appWrap.style.setProperty('display', 'flex', 'important');
-    console.log('appWrap exibido.');
-  } else {
-    console.error('ERRO: Elemento appWrap não encontrado!');
-  }
-  
-  var tbUserName = document.getElementById('tbUserName');
-  if(tbUserName) tbUserName.textContent=user.nome.split(' ')[0];
-  
-  var tbUserRole = document.getElementById('tbUserRole');
-  if(tbUserRole) {
-    tbUserRole.textContent=user.role==='dev'?'Dev':user.role==='admin'?'Admin':'Usuário';
-    tbUserRole.className='tb-user-role role-'+(user.role==='dev'?'dev':user.role==='admin'?'admin':'user');
-  }
-  
+  document.getElementById('loginWrap').style.display='none';
+  var app=document.getElementById('appWrap');app.style.display='flex';
+  document.getElementById('tbUserName').textContent=user.nome.split(' ')[0];
+  document.getElementById('tbUserRole').textContent=user.role==='dev'?'Dev':user.role==='admin'?'Admin':'Usuário';
+  document.getElementById('tbUserRole').className='tb-user-role role-'+(user.role==='dev'?'dev':user.role==='admin'?'admin':'user');
+  // Mostrar menu usuários para admin e dev
   var nbU=document.getElementById('nb-usuarios');
-  if(nbU) nbU.className=(user.role==='admin'||user.role==='dev')?'nb':'nb hidden';
-  
-  console.log('Chamando init()...');
-  try {
-    init().then(() => {
-      console.log('Navegando para o painel...');
-      go('painel');
-    }).catch(e => {
-      console.error('Erro no init():', e);
-      go('painel'); // Tenta abrir mesmo com erro
-    });
-  } catch(e) {
-    console.error('Erro ao executar init():', e);
-    go('painel');
-  }
+  if(nbU)nbU.className=(user.role==='admin'||user.role==='dev')?'nb':'nb hidden';
+  init();
 }
 
 function doLogout(){
   if(!confirm('Sair do sistema?'))return;
   authUser=null;
-  document.body.className = '';
   document.getElementById('appWrap').style.display='none';
   document.getElementById('loginWrap').style.display='flex';
   document.getElementById('loginUser').value='';
@@ -986,24 +710,32 @@ function carregarCores(){
 // ══════════════════════════════════════════════════════════════════
 // PERSIST
 // ══════════════════════════════════════════════════════════════════
-async function save(){
-  // Supabase handles persistence - no-op for local state
-  var t=document.getElementById('toast');
-  t.textContent='✓ Salvo';t.style.display='block';
-  clearTimeout(window._tt);window._tt=setTimeout(function(){t.style.display='none';},2000);
+function save(){
+  try{
+    localStorage.setItem('nv_REF',JSON.stringify(REF));
+    localStorage.setItem('nv_CAFE',JSON.stringify(CAFE));
+    localStorage.setItem('nv_ALIM',JSON.stringify(ALIM));
+    localStorage.setItem('nv_LOG',JSON.stringify(LOG));
+    localStorage.setItem('nv_EMP',JSON.stringify(EMP));
+    localStorage.setItem('nv_EST',JSON.stringify(EST));
+    localStorage.setItem('nv_CFG',JSON.stringify(CFG));
+    showToast('Salvo ✓');
+  }catch(e){}
 }
 function showToast(msg){
   var t=document.getElementById('toast');t.textContent=msg;t.style.display='block';
   clearTimeout(window._tt);window._tt=setTimeout(function(){t.style.display='none';},2000);
 }
 function load(){
-  // Data loaded from Supabase in carregarTudo()
   try{
-    var t=localStorage.getItem('nv_theme');
-    if(t) setTheme(t);
-    var cores=localStorage.getItem('nv_cores');
-    if(cores) { window._savedCores = JSON.parse(cores); }
-  }catch(e){}
+    var r=localStorage.getItem('nv_REF');if(r)REF=JSON.parse(r);
+    var ca=localStorage.getItem('nv_CAFE');if(ca)CAFE=JSON.parse(ca);
+    var a=localStorage.getItem('nv_ALIM');if(a)ALIM=JSON.parse(a);
+    var l=localStorage.getItem('nv_LOG');if(l)LOG=JSON.parse(l);
+    var e=localStorage.getItem('nv_EMP');if(e)EMP=JSON.parse(e);
+    var es=localStorage.getItem('nv_EST');if(es)EST=JSON.parse(es);
+    var c=localStorage.getItem('nv_CFG');if(c){CFG=JSON.parse(c);aplicarConfig();}
+  }catch(ex){}
 }
 function exportBackup(){
   var b=new Blob([JSON.stringify({REF,CAFE,ALIM,LOG,EMP,EST,CFG},null,2)],{type:'application/json'});
@@ -1041,30 +773,24 @@ function aplicarConfig(){
   var els={cfgNome:CFG.nome||'',cfgObra:CFG.obra||'',cfgValCafe:CFG.valCafe||'',cfgValAlm:CFG.valAlm||'',cfgValJan:CFG.valJan||''};
   Object.keys(els).forEach(function(k){var el=document.getElementById(k);if(el)el.value=els[k];});
 }
-async function trocarLogo(ev){
+function trocarLogo(ev){
   var f=ev.target.files[0];if(!f)return;
   var r=new FileReader();
-  r.onload=async function(e){
+  r.onload=function(e){
     CFG.logo=e.target.result;
     var logo=document.getElementById('topLogo');var icon=document.getElementById('topLogoIcon');
     if(logo){logo.src=CFG.logo;logo.style.display='block';if(icon)icon.style.display='none';}
     var prev=document.getElementById('cfgLogoPrev');var pIcon=document.getElementById('cfgLogoIcon');
     if(prev){prev.src=CFG.logo;prev.style.display='block';if(pIcon)pIcon.style.display='none';}
-    try {
-      await sbUpsert('nv_config',{id:1,nome:CFG.nome,obra:CFG.obra,logo:CFG.logo,val_cafe:CFG.valCafe,val_alm:CFG.valAlm,val_jan:CFG.valJan});
-    } catch(err) { console.error('Erro ao salvar logo:', err); }
   };r.readAsDataURL(f);
 }
-async function salvarConfig(){
+function salvarConfig(){
   CFG.nome=document.getElementById('cfgNome').value||'Nutrivaz';
   CFG.obra=document.getElementById('cfgObra').value||'';
   CFG.valCafe=parseFloat(document.getElementById('cfgValCafe').value)||0;
   CFG.valAlm=parseFloat(document.getElementById('cfgValAlm').value)||0;
   CFG.valJan=parseFloat(document.getElementById('cfgValJan').value)||0;
-  aplicarConfig();
-  await sbUpsert('nv_config', {id:1, nome:CFG.nome, obra:CFG.obra,
-    logo:CFG.logo||'', val_cafe:CFG.valCafe, val_alm:CFG.valAlm, val_jan:CFG.valJan});
-  showToast('✓ Configurações salvas!');
+  aplicarConfig();save();
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -1261,11 +987,14 @@ function renderRefeicoes(){
   }).sort(function(a,b){return b.data.localeCompare(a.data)||b.id-a.id;});
   var c=document.getElementById('tblRef');
   if(!list.length){c.innerHTML='<div class="empty">Nenhum registro encontrado.</div>';return;}
-  var h='<div style="overflow-x:auto"><table><thead><tr><th>Data</th><th>Empresa</th><th>Func.NV</th><th>Func.Alm</th><th>Almoços</th><th>Jantas</th><th>Extras</th><th class="admin-only">Valor</th><th>Ações</th></tr></thead><tbody>';
+  var isAdmin=authUser&&(authUser.role==='admin'||authUser.role==='dev');
+  var h='<div style="overflow-x:auto"><table><thead><tr><th>Data</th><th>Empresa</th><th>Func.NV</th><th>Func.Alm</th><th>Almoços</th><th>Jantas</th><th>Extras</th><th>Valor</th>'+(isAdmin?'<th>Preenchido por</th>':'')+'<th>Ações</th></tr></thead><tbody>';
   list.forEach(function(r){
     var va=(parseFloat(r.valAlm)||CFG.valAlm||0)*(parseInt(r.qtdAlm)||0);
     var vj=(parseFloat(r.valJan)||CFG.valJan||0)*(parseInt(r.qtdJan)||0);
     var ve=(parseFloat(r.valExt)||CFG.valAlm||0)*(parseInt(r.qtdExt)||0);
+    var criador=r.criadoPor||'—';
+    var editador=r.editadoPor?(' <span style="font-size:9px;color:var(--tx3)">(ed: '+r.editadoPor+')</span>'):'';
     h+='<tr><td style="white-space:nowrap;font-weight:600">'+formatData(r.data)+'</td>'
       +'<td><span class="badge b-alm">'+r.empresa+'</span></td>'
       +'<td style="text-align:center">'+(r.funcNutrivaz||0)+'</td>'
@@ -1273,8 +1002,13 @@ function renderRefeicoes(){
       +'<td style="text-align:center;font-weight:700;color:var(--org)">'+(r.qtdAlm||0)+'</td>'
       +'<td style="text-align:center;font-weight:700;color:var(--navy)">'+(r.qtdJan||0)+'</td>'
       +'<td style="text-align:center"><span class="badge b-ext">'+(r.qtdExt||0)+'</span></td>'
-      +'<td class="admin-only" style="font-weight:700">R$'+(va+vj+ve).toFixed(2).replace('.',',')+'</td>'
-      +'<td><div class="td-act"><button class="btn-sm btn-edit" onclick="editRef('+r.id+')">Editar</button><button class="btn-sm btn-del" onclick="delRef('+r.id+')">Apagar</button></div></td>'
+      +'<td style="font-weight:700">R$'+(va+vj+ve).toFixed(2).replace('.',',')+'</td>'
+      +(isAdmin?'<td style="font-size:11px;color:var(--tx2)">'+criador+editador+(r.criadoEm?'<br><span style="font-size:9px;color:var(--tx3)">'+r.criadoEm+'</span>':'')+'</td>':'')
+      +'<td><div class="td-act">'
+      +'<button class="btn-sm" style="background:var(--navy-dim);color:var(--navy);border:1px solid var(--navy3)" onclick="verRef('+r.id+')">👁 Ver</button>'
+      +'<button class="btn-sm btn-edit" onclick="editRef('+r.id+')">Editar</button>'
+      +'<button class="btn-sm btn-del" onclick="delRef('+r.id+')">Apagar</button>'
+      +'</div></td>'
       +'</tr>';
   });
   h+='</tbody></table></div>';c.innerHTML=h;
@@ -1296,13 +1030,13 @@ function buildFormRef(r){
     +'<div class="frow3">'
     +'<div class="fm" style="margin:0"><label class="fl">Qtd. almoços</label><input class="fi" type="number" id="rQtdAlm" min="0" value="'+(r?r.qtdAlm||0:0)+'"></div>'
     +'<div class="fm" style="margin:0"><label class="fl">Extras pagos fora</label><input class="fi" type="number" id="rQtdExt" min="0" value="'+(r?r.qtdExt||0:0)+'"></div>'
-    +'<div class="fm admin-only" style="margin:0"><label class="fl">Valor/almoço (R$)</label><input class="fi" type="number" step="0.01" id="rValAlm" value="'+(r?r.valAlm||CFG.valAlm:CFG.valAlm)+'"></div>'
+    +'<div class="fm" style="margin:0"><label class="fl">Valor/almoço (R$)</label><input class="fi" type="number" step="0.01" id="rValAlm" value="'+(r?r.valAlm||CFG.valAlm:CFG.valAlm)+'"></div>'
     +'</div></div>'
     +'<div id="jantaBlock" style="background:var(--navy-dim);border:1px solid var(--navy3);border-radius:8px;padding:12px;margin-bottom:12px;'+(isHoss?'':'display:none')+'">'
     +'<div style="font-size:10px;font-weight:700;color:var(--navy);margin-bottom:8px">🌙 JANTA — Construtora HOSS</div>'
     +'<div class="frow2">'
     +'<div class="fm" style="margin:0"><label class="fl">Qtd. jantas</label><input class="fi" type="number" id="rQtdJan" min="0" value="'+(r?r.qtdJan||0:0)+'"></div>'
-    +'<div class="fm admin-only" style="margin:0"><label class="fl">Valor/janta (R$)</label><input class="fi" type="number" step="0.01" id="rValJan" value="'+(r?r.valJan||CFG.valJan:CFG.valJan)+'"></div>'
+    +'<div class="fm" style="margin:0"><label class="fl">Valor/janta (R$)</label><input class="fi" type="number" step="0.01" id="rValJan" value="'+(r?r.valJan||CFG.valJan:CFG.valJan)+'"></div>'
     +'</div></div>'
     +'<div class="fm"><label class="fl">Observações</label><textarea class="fi" id="rObs">'+(r?r.obs||'':'')+'</textarea></div>';
 }
@@ -1325,11 +1059,52 @@ function editRef(id){
     +'<div class="mb">'+buildFormRef(r)+'</div>'
     +'<div class="mf"><button class="btn-sec" onclick="closeM()">Cancelar</button><button class="btn" onclick="salvarRef()">Salvar alterações</button></div>');
 }
-async function salvarRef(){
+
+function verRef(id){
+  var r=REF.find(function(x){return x.id===id;});if(!r)return;
+  var va=(parseFloat(r.valAlm)||CFG.valAlm||0)*(parseInt(r.qtdAlm)||0);
+  var vj=(parseFloat(r.valJan)||CFG.valJan||0)*(parseInt(r.qtdJan)||0);
+  var ve=(parseFloat(r.valExt)||CFG.valAlm||0)*(parseInt(r.qtdExt)||0);
+  var total=va+vj+ve;
+  var linhas=[
+    ['Data',formatData(r.data)],
+    ['Empresa',r.empresa],
+    ['Func. Nutrivaz servindo',r.funcNutrivaz||0],
+    ['Func. almoçando na obra',r.funcAlm||0],
+    ['Qtd. almoços',r.qtdAlm||0],
+    ['Qtd. extras',r.qtdExt||0],
+    ['Valor/almoço','R$ '+(parseFloat(r.valAlm)||0).toFixed(2)],
+    ['Qtd. jantas',r.qtdJan||0],
+    ['Valor/janta','R$ '+(parseFloat(r.valJan)||0).toFixed(2)],
+    ['Valor total','R$ '+total.toFixed(2).replace('.',',')],
+    ['Observações',r.obs||'—'],
+    ['',''],
+    ['Preenchido por',r.criadoPor||'—'],
+    ['Data/hora preenchimento',r.criadoEm||'—'],
+    ['Editado por',r.editadoPor||'—'],
+    ['Data/hora edição',r.editadoEm||'—'],
+  ];
+  var tbody=linhas.map(function(l){
+    if(!l[0]&&!l[1]) return '<tr><td colspan="2" style="padding:4px 0"></td></tr>';
+    var isSep=l[0]==='Preenchido por';
+    var isTotal=l[0]==='Valor total';
+    return '<tr style="'+(isSep?'border-top:2px solid var(--bdr2)':'')+'">'
+      +'<td style="padding:8px 12px;font-size:11px;font-weight:700;color:var(--tx3);width:160px;background:var(--bg2)">'+l[0]+'</td>'
+      +'<td style="padding:8px 12px;font-size:'+(isTotal?'14px':'12px')+';font-weight:'+(isTotal?'700':'400')+';color:'+(isTotal?'var(--org)':'var(--tx)')+'">'+l[1]+'</td>'
+      +'</tr>';
+  }).join('');
+  openModal('<div class="mh"><h3>👁 Visualizar Refeição — '+r.empresa+'</h3><button class="mclose" onclick="closeM()">×</button></div>'
+    +'<div class="mb"><table style="width:100%;border-collapse:collapse;border:1px solid var(--bdr);border-radius:8px;overflow:hidden">'+tbody+'</table></div>'
+    +'<div class="mf"><button class="btn-sec" onclick="closeM()">Fechar</button><button class="btn" onclick="closeM();editRef('+id+')">✏️ Editar</button></div>');
+}
+function salvarRef(){
   var emp=document.getElementById('rEmp').value;
   if(!emp){alert('Selecione a empresa.');return;}
-  var id = window._editRefId || Date.now();
-  var obj={id:id, data:document.getElementById('rData').value||hoje, empresa:emp,
+  var existing=window._editRefId?REF.find(function(x){return x.id===window._editRefId;}):null;
+  var obj={
+    id:window._editRefId||Date.now(),
+    data:document.getElementById('rData').value||hoje,
+    empresa:emp,
     funcNutrivaz:parseInt(document.getElementById('rFuncNv').value)||0,
     funcAlm:parseInt(document.getElementById('rFuncAlm').value)||0,
     qtdAlm:parseInt(document.getElementById('rQtdAlm').value)||0,
@@ -1338,27 +1113,18 @@ async function salvarRef(){
     qtdJan:parseInt(document.getElementById('rQtdJan').value)||0,
     valJan:parseFloat(document.getElementById('rValJan').value)||CFG.valJan||0,
     valExt:parseFloat(document.getElementById('rValAlm').value)||CFG.valAlm||0,
-    obs:document.getElementById('rObs').value};
-  var dbRow={id:obj.id, data:obj.data, empresa:obj.empresa,
-    func_nutrivaz:obj.funcNutrivaz, func_alm:obj.funcAlm,
-    qtd_alm:obj.qtdAlm, qtd_ext:obj.qtdExt, val_alm:obj.valAlm,
-    qtd_jan:obj.qtdJan, val_jan:obj.valJan, val_ext:obj.valExt, obs:obj.obs};
-  if(window._editRefId){
-    await sbUpdate('nv_refeicoes', id, dbRow);
-    var idx=REF.findIndex(function(x){return x.id===id;});if(idx>=0)REF[idx]=obj;
-  } else {
-    await sbInsert('nv_refeicoes', dbRow);
-    REF.unshift(obj);
-  }
-  showToast('✓ Refeição salva!');
-  closeM();renderRefeicoes();
+    obs:document.getElementById('rObs').value,
+    // Rastreabilidade
+    criadoPor: existing?existing.criadoPor:(authUser?authUser.nome:'—'),
+    criadoEm:  existing?existing.criadoEm:new Date().toLocaleString('pt-BR'),
+    editadoPor: window._editRefId?(authUser?authUser.nome:'—'):null,
+    editadoEm:  window._editRefId?new Date().toLocaleString('pt-BR'):null,
+  };
+  if(window._editRefId){var idx=REF.findIndex(function(x){return x.id===window._editRefId;});if(idx>=0)REF[idx]=obj;}
+  else REF.unshift(obj);
+  save();closeM();renderRefeicoes();
 }
-async function delRef(id){
-  if(!confirm('Apagar este registro?'))return;
-  await sbDelete('nv_refeicoes', id);
-  REF=REF.filter(function(x){return x.id!==id;});
-  renderRefeicoes();showToast('✓ Excluído!');
-}
+function delRef(id){if(!confirm('Apagar este registro?'))return;REF=REF.filter(function(x){return x.id!==id;});save();renderRefeicoes();}
 
 // ══════════════════════════════════════════════════════════════════
 // CAFÉ DA MANHÃ
@@ -1379,17 +1145,23 @@ function renderCafe(){
   var totalQtd=list.filter(function(c){return(!fd||c.data===fd);}).reduce(function(s,c){return s+(parseInt(c.qtd)||0);},0);
   var el=document.getElementById('tblCafe');
   if(!list.length){el.innerHTML='<div class="empty">Nenhum registro de café da manhã.</div>';return;}
-  var h='<div style="overflow-x:auto"><table><thead><tr><th>Data</th><th>Empresa</th><th>Quantidade</th><th>Itens Servidos</th><th class="admin-only">Valor Unit.</th><th class="admin-only">Total</th><th>Obs</th><th>Ações</th></tr></thead><tbody>';
+  var isAdmin=authUser&&(authUser.role==='admin'||authUser.role==='dev');
+  var h='<div style="overflow-x:auto"><table><thead><tr><th>Data</th><th>Empresa</th><th>Quantidade</th><th>Itens Servidos</th><th>Valor Unit.</th><th>Total</th><th>Obs</th>'+(isAdmin?'<th>Preenchido por</th>':'')+'<th>Ações</th></tr></thead><tbody>';
   list.forEach(function(c){
     var vt=(parseFloat(c.valCafe)||CFG.valCafe||0)*(parseInt(c.qtd)||0);
     h+='<tr><td style="white-space:nowrap;font-weight:600">'+formatData(c.data)+'</td>'
       +'<td><span class="badge b-cafe">'+c.empresa+'</span></td>'
       +'<td style="text-align:center;font-weight:700;color:var(--yellow)">'+c.qtd+'</td>'
       +'<td style="font-size:10px;color:var(--tx3)">'+(c.itens||'—')+'</td>'
-      +'<td class="admin-only">R$'+(parseFloat(c.valCafe)||CFG.valCafe||0).toFixed(2).replace('.',',')+'</td>'
-      +'<td class="admin-only" style="font-weight:700">R$'+vt.toFixed(2).replace('.',',')+'</td>'
+      +'<td>R$'+(parseFloat(c.valCafe)||CFG.valCafe||0).toFixed(2).replace('.',',')+'</td>'
+      +'<td style="font-weight:700">R$'+vt.toFixed(2).replace('.',',')+'</td>'
       +'<td style="font-size:10px;color:var(--tx3)">'+(c.obs||'—')+'</td>'
-      +'<td><div class="td-act"><button class="btn-sm btn-edit" onclick="editCafe('+c.id+')">Editar</button><button class="btn-sm btn-del" onclick="delCafe('+c.id+')">Apagar</button></div></td>'
+      +(isAdmin?'<td style="font-size:11px;color:var(--tx2)">'+(c.criadoPor||'—')+(c.criadoEm?'<br><span style="font-size:9px;color:var(--tx3)">'+c.criadoEm+'</span>':'')+'</td>':'')
+      +'<td><div class="td-act">'
+      +'<button class="btn-sm" style="background:var(--navy-dim);color:var(--navy);border:1px solid var(--navy3)" onclick="verCafe('+c.id+')">👁 Ver</button>'
+      +'<button class="btn-sm btn-edit" onclick="editCafe('+c.id+')">Editar</button>'
+      +'<button class="btn-sm btn-del" onclick="delCafe('+c.id+')">Apagar</button>'
+      +'</div></td>'
       +'</tr>';
   });
   h+='</tbody></table></div>';
@@ -1408,7 +1180,7 @@ function buildFormCafe(c){
     +'<div style="font-size:10px;font-weight:700;color:var(--yellow);margin-bottom:8px">☕ CAFÉ DA MANHÃ</div>'
     +'<div class="frow2">'
     +'<div class="fm" style="margin:0"><label class="fl">Quantidade de pessoas *</label><input class="fi" type="number" id="cQtd" min="0" value="'+(c?c.qtd||0:0)+'"></div>'
-    +'<div class="fm admin-only" style="margin:0"><label class="fl">Valor por pessoa (R$)</label><input class="fi" type="number" step="0.01" id="cValCafe" value="'+(c?c.valCafe||CFG.valCafe:CFG.valCafe)+'"></div>'
+    +'<div class="fm" style="margin:0"><label class="fl">Valor por pessoa (R$)</label><input class="fi" type="number" step="0.01" id="cValCafe" value="'+(c?c.valCafe||CFG.valCafe:CFG.valCafe)+'"></div>'
     +'</div></div>'
     +'<div class="fm"><label class="fl">Itens servidos</label>'
     +'<div style="padding:10px;border:1px solid var(--bdr2);border-radius:7px;background:var(--input-bg);margin-top:4px" id="cafeItensWrap">'+itensOpts+'</div></div>'
@@ -1422,6 +1194,37 @@ function abrirNovoCafe(){
     +'<div class="mb">'+buildFormCafe(null)+'</div>'
     +'<div class="mf"><button class="btn-sec" onclick="closeM()">Cancelar</button><button class="btn" style="background:var(--yellow);color:#000" onclick="salvarCafe()">Salvar</button></div>');
 }
+function verCafe(id){
+  var c=CAFE.find(function(x){return x.id===id;});if(!c)return;
+  var vt=(parseFloat(c.valCafe)||CFG.valCafe||0)*(parseInt(c.qtd)||0);
+  var linhas=[
+    ['Data',formatData(c.data)],
+    ['Empresa',c.empresa],
+    ['Quantidade',c.qtd||0],
+    ['Itens servidos',(c.itens||[]).join(', ')||'—'],
+    ['Valor unitário','R$ '+(parseFloat(c.valCafe)||0).toFixed(2)],
+    ['Valor total','R$ '+vt.toFixed(2).replace('.',',')],
+    ['Observações',c.obs||'—'],
+    ['',''],
+    ['Preenchido por',c.criadoPor||'—'],
+    ['Data/hora preenchimento',c.criadoEm||'—'],
+    ['Editado por',c.editadoPor||'—'],
+    ['Data/hora edição',c.editadoEm||'—'],
+  ];
+  var tbody=linhas.map(function(l){
+    if(!l[0]&&!l[1]) return '<tr><td colspan="2" style="padding:4px 0"></td></tr>';
+    var isSep=l[0]==='Preenchido por';
+    var isTotal=l[0]==='Valor total';
+    return '<tr style="'+(isSep?'border-top:2px solid var(--bdr2)':'')+'">'
+      +'<td style="padding:8px 12px;font-size:11px;font-weight:700;color:var(--tx3);width:160px;background:var(--bg2)">'+l[0]+'</td>'
+      +'<td style="padding:8px 12px;font-size:'+(isTotal?'14px':'12px')+';font-weight:'+(isTotal?'700':'400')+';color:'+(isTotal?'var(--org)':'var(--tx)')+'">'+l[1]+'</td>'
+      +'</tr>';
+  }).join('');
+  openModal('<div class="mh"><h3>👁 Visualizar Café — '+c.empresa+'</h3><button class="mclose" onclick="closeM()">×</button></div>'
+    +'<div class="mb"><table style="width:100%;border-collapse:collapse;border:1px solid var(--bdr);border-radius:8px;overflow:hidden">'+tbody+'</table></div>'
+    +'<div class="mf"><button class="btn-sec" onclick="closeM()">Fechar</button><button class="btn" onclick="closeM();editCafe('+id+')">✏️ Editar</button></div>');
+}
+
 function editCafe(id){
   var c=CAFE.find(function(x){return x.id===id;});if(!c)return;
   window._editCafeId=id;
@@ -1429,34 +1232,34 @@ function editCafe(id){
     +'<div class="mb">'+buildFormCafe(c)+'</div>'
     +'<div class="mf"><button class="btn-sec" onclick="closeM()">Cancelar</button><button class="btn" style="background:var(--yellow);color:#000" onclick="salvarCafe()">Salvar alterações</button></div>');
 }
-async function salvarCafe(){
+function salvarCafe(){
   var emp=document.getElementById('cEmp').value;
   if(!emp){alert('Selecione a empresa.');return;}
   var qtd=parseInt(document.getElementById('cQtd').value)||0;
   if(!qtd){alert('Informe a quantidade.');return;}
   var itensChecked=Array.from(document.querySelectorAll('#cafeItensWrap input:checked')).map(function(cb){return cb.value;});
-  var id = window._editCafeId || Date.now();
-  var obj={id:id, data:document.getElementById('cData').value||hoje,
-    empresa:emp, qtd:qtd,
+  var obj={
+    id:window._editCafeId||Date.now(),
+    data:document.getElementById('cData').value||hoje,
+    empresa:emp,
+    qtd:qtd,
     valCafe:parseFloat(document.getElementById('cValCafe').value)||CFG.valCafe||0,
-    itens:itensChecked.join(', '), obs:document.getElementById('cObs').value};
-  var dbRow={id:obj.id, data:obj.data, empresa:obj.empresa,
-    qtd:obj.qtd, val_cafe:obj.valCafe, itens:obj.itens, obs:obj.obs};
-  if(window._editCafeId){
-    await sbUpdate('nv_cafe', id, dbRow);
-    var idx=CAFE.findIndex(function(x){return x.id===id;});if(idx>=0)CAFE[idx]=obj;
-  } else {
-    await sbInsert('nv_cafe', dbRow);
-    CAFE.unshift(obj);
-  }
-  showToast('✓ Café salvo!');closeM();renderCafe();
+    itens:itensChecked.join(', '),
+    obs:document.getElementById('cObs').value,
+  };
+  obj.criadoPor = window._editCafeId
+    ? (CAFE.find(function(x){return x.id===window._editCafeId;})||{}).criadoPor||'—'
+    : (authUser?authUser.nome:'—');
+  obj.criadoEm = window._editCafeId
+    ? (CAFE.find(function(x){return x.id===window._editCafeId;})||{}).criadoEm||'—'
+    : new Date().toLocaleString('pt-BR');
+  obj.editadoPor = window._editCafeId?(authUser?authUser.nome:'—'):null;
+  obj.editadoEm  = window._editCafeId?new Date().toLocaleString('pt-BR'):null;
+  if(window._editCafeId){var idx=CAFE.findIndex(function(x){return x.id===window._editCafeId;});if(idx>=0)CAFE[idx]=obj;}
+  else CAFE.unshift(obj);
+  save();closeM();renderCafe();
 }
-async function delCafe(id){
-  if(!confirm('Apagar?'))return;
-  await sbDelete('nv_cafe', id);
-  CAFE=CAFE.filter(function(x){return x.id!==id;});
-  renderCafe();showToast('✓ Excluído!');
-}
+function delCafe(id){if(!confirm('Apagar?'))return;CAFE=CAFE.filter(function(x){return x.id!==id;});save();renderCafe();}
 
 // ══════════════════════════════════════════════════════════════════
 // ALIMENTOS
@@ -1538,33 +1341,17 @@ function editAlim(id){
     +'<div class="mb">'+buildFormAlim(a)+'</div>'
     +'<div class="mf"><button class="btn-sec" onclick="closeM()">Cancelar</button><button class="btn" onclick="salvarAlim()">Salvar</button></div>');
 }
-async function salvarAlim(){
+function salvarAlim(){
   var nSel=document.getElementById('aNome').value;
   var nome=nSel==='__outro'?(document.getElementById('aNomeOutro').value.trim()||'Outro'):nSel;
   if(!nome){alert('Selecione o alimento.');return;}
   var qtd=parseFloat(document.getElementById('aQtd').value);if(!qtd){alert('Informe a quantidade.');return;}
-  var id = window._editAlimId || Date.now();
-  var obj={id:id, data:document.getElementById('aData').value||hoje,
-    nome:nome, qtd:qtd, unidade:document.getElementById('aUnidade').value,
-    perda:parseFloat(document.getElementById('aPerda').value)||0,
-    obs:document.getElementById('aObs').value};
-  var dbRow={id:obj.id, data:obj.data, nome:obj.nome, qtd:obj.qtd,
-    unidade:obj.unidade, perda:obj.perda, obs:obj.obs};
-  if(window._editAlimId){
-    await sbUpdate('nv_alimentos', id, dbRow);
-    var idx=ALIM.findIndex(function(x){return x.id===id;});if(idx>=0)ALIM[idx]=obj;
-  } else {
-    await sbInsert('nv_alimentos', dbRow);
-    ALIM.unshift(obj);
-  }
-  showToast('✓ Alimento salvo!');closeM();renderAlimentos();
+  var obj={id:window._editAlimId||Date.now(),data:document.getElementById('aData').value||hoje,nome:nome,qtd:qtd,unidade:document.getElementById('aUnidade').value,perda:parseFloat(document.getElementById('aPerda').value)||0,obs:document.getElementById('aObs').value};
+  if(window._editAlimId){var idx=ALIM.findIndex(function(x){return x.id===window._editAlimId;});if(idx>=0)ALIM[idx]=obj;}
+  else ALIM.unshift(obj);
+  save();closeM();renderAlimentos();
 }
-async function delAlim(id){
-  if(!confirm('Apagar?'))return;
-  await sbDelete('nv_alimentos', id);
-  ALIM=ALIM.filter(function(x){return x.id!==id;});
-  renderAlimentos();showToast('✓ Excluído!');
-}
+function delAlim(id){if(!confirm('Apagar?'))return;ALIM=ALIM.filter(function(x){return x.id!==id;});save();renderAlimentos();}
 
 // ══════════════════════════════════════════════════════════════════
 // ESTOQUE
@@ -1599,7 +1386,7 @@ function renderEstoque(){
 
   // Tabela movimentações
   var fm=document.getElementById('fEstMes').value||hoje.slice(0,7);
-  var ESTMOV=window._ESTMOV||[];
+  var ESTMOV=JSON.parse(localStorage.getItem('nv_ESTMOV')||'[]');
   var movs=ESTMOV.filter(function(m){return m.data.slice(0,7)===fm;}).sort(function(a,b){return b.data.localeCompare(a.data)||b.id-a.id;});
   var c=document.getElementById('tblEst');
   if(!movs.length){c.innerHTML='<div class="empty">Nenhuma movimentação no mês.</div>';return;}
@@ -1650,31 +1437,14 @@ function editEstoque(id){
     +'<div class="mb">'+buildFormEstoque(e)+'</div>'
     +'<div class="mf"><button class="btn-sec" onclick="closeM()">Cancelar</button><button class="btn btn-green" onclick="salvarEstoque()">Salvar</button></div>');
 }
-async function salvarEstoque(){
+function salvarEstoque(){
   var nome=document.getElementById('esNome').value.trim();if(!nome){alert('Informe o nome.');return;}
-  var id = window._editEstId || Date.now();
-  var obj={id:id, nome:nome, categoria:document.getElementById('esCat').value,
-    qtdAtual:parseFloat(document.getElementById('esQtdAtual').value)||0,
-    qtdMinima:parseFloat(document.getElementById('esQtdMin').value)||0,
-    unidade:document.getElementById('esUnidade').value,
-    obs:document.getElementById('esObs').value};
-  var dbRow={id:obj.id, nome:obj.nome, categoria:obj.categoria,
-    qtd_atual:obj.qtdAtual, qtd_minima:obj.qtdMinima, unidade:obj.unidade, obs:obj.obs};
-  if(window._editEstId){
-    await sbUpdate('nv_estoque', id, dbRow);
-    var idx=EST.findIndex(function(x){return x.id===id;});if(idx>=0)EST[idx]=obj;
-  } else {
-    await sbInsert('nv_estoque', dbRow);
-    EST.push(obj);
-  }
-  showToast('✓ Estoque salvo!');closeM();renderEstoque();
+  var obj={id:window._editEstId||Date.now(),nome:nome,categoria:document.getElementById('esCat').value,qtdAtual:parseFloat(document.getElementById('esQtdAtual').value)||0,qtdMinima:parseFloat(document.getElementById('esQtdMin').value)||0,unidade:document.getElementById('esUnidade').value,obs:document.getElementById('esObs').value};
+  if(window._editEstId){var idx=EST.findIndex(function(x){return x.id===window._editEstId;});if(idx>=0)EST[idx]=obj;}
+  else EST.push(obj);
+  save();closeM();renderEstoque();
 }
-async function delEstoque(id){
-  if(!confirm('Apagar item do estoque?'))return;
-  await sbDelete('nv_estoque', id);
-  EST=EST.filter(function(x){return x.id!==id;});
-  renderEstoque();showToast('✓ Excluído!');
-}
+function delEstoque(id){if(!confirm('Apagar item do estoque?'))return;EST=EST.filter(function(x){return x.id!==id;});save();renderEstoque();}
 
 function movEstoque(id){
   var e=EST.find(function(x){return x.id===id;});if(!e)return;
@@ -1689,7 +1459,7 @@ function movEstoque(id){
     +'</div>'
     +'<div class="mf"><button class="btn-sec" onclick="closeM()">Cancelar</button><button class="btn btn-green" onclick="salvarMov('+id+')">Confirmar</button></div>');
 }
-async function salvarMov(estId){
+function salvarMov(estId){
   var e=EST.find(function(x){return x.id===estId;});if(!e)return;
   var tipo=document.getElementById('movTipo').value;
   var qtd=parseFloat(document.getElementById('movQtd').value)||0;
@@ -1697,15 +1467,10 @@ async function salvarMov(estId){
   var novo=tipo==='entrada'?(parseFloat(e.qtdAtual)+qtd):(parseFloat(e.qtdAtual)-qtd);
   if(novo<0){alert('Quantidade insuficiente no estoque.');return;}
   e.qtdAtual=parseFloat(novo.toFixed(2));
-  await sbUpdate('nv_estoque', estId, {qtd_atual: e.qtdAtual});
-  var movId = Date.now();
-  var mov={id:movId, data:hoje, nome:e.nome, tipo:tipo, qtd:qtd,
-    unidade:e.unidade, saldoApos:e.qtdAtual, obs:document.getElementById('movObs').value};
-  await sbInsert('nv_estoque_mov', {id:mov.id, data:mov.data, nome:mov.nome,
-    tipo:mov.tipo, qtd:mov.qtd, unidade:mov.unidade, saldo_apos:mov.saldoApos, obs:mov.obs});
-  if(!window._ESTMOV) window._ESTMOV = [];
-  window._ESTMOV.unshift(mov);
-  showToast('✓ Movimentação registrada!');closeM();renderEstoque();
+  var ESTMOV=JSON.parse(localStorage.getItem('nv_ESTMOV')||'[]');
+  ESTMOV.unshift({id:Date.now(),data:hoje,nome:e.nome,tipo:tipo,qtd:qtd,unidade:e.unidade,saldoApos:e.qtdAtual,obs:document.getElementById('movObs').value});
+  localStorage.setItem('nv_ESTMOV',JSON.stringify(ESTMOV));
+  save();closeM();renderEstoque();showToast('Movimentação registrada!');
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -1768,35 +1533,16 @@ function editLog(id){
     +'<div class="mf"><button class="btn-sec" onclick="closeM()">Cancelar</button><button class="btn" onclick="salvarLog()">Salvar</button></div>');
   setTimeout(calcKm,100);
 }
-async function salvarLog(){
+function salvarLog(){
   var s=parseFloat(document.getElementById('lKmSaida').value)||0;
   var ch=parseFloat(document.getElementById('lKmChegada').value)||0;
   if(!s||!ch){alert('Informe KM de saída e chegada.');return;}
-  var id = window._editLogId || Date.now();
-  var obj={id:id, data:document.getElementById('lData').value||hoje,
-    veiculo:document.getElementById('lVeiculo').value||'—',
-    motorista:document.getElementById('lMotorista').value||'—',
-    kmSaida:s, kmChegada:ch, kmRodado:(ch-s).toFixed(1),
-    destino:document.getElementById('lDestino').value,
-    obs:document.getElementById('lObs').value};
-  var dbRow={id:obj.id, data:obj.data, veiculo:obj.veiculo, motorista:obj.motorista,
-    km_saida:obj.kmSaida, km_chegada:obj.kmChegada, km_rodado:obj.kmRodado,
-    destino:obj.destino, obs:obj.obs};
-  if(window._editLogId){
-    await sbUpdate('nv_logistica', id, dbRow);
-    var idx=LOG.findIndex(function(x){return x.id===id;});if(idx>=0)LOG[idx]=obj;
-  } else {
-    await sbInsert('nv_logistica', dbRow);
-    LOG.unshift(obj);
-  }
-  showToast('✓ KM salvo!');closeM();renderLogistica();
+  var obj={id:window._editLogId||Date.now(),data:document.getElementById('lData').value||hoje,veiculo:document.getElementById('lVeiculo').value||'—',motorista:document.getElementById('lMotorista').value||'—',kmSaida:s,kmChegada:ch,kmRodado:(ch-s).toFixed(1),destino:document.getElementById('lDestino').value,obs:document.getElementById('lObs').value};
+  if(window._editLogId){var idx=LOG.findIndex(function(x){return x.id===window._editLogId;});if(idx>=0)LOG[idx]=obj;}
+  else LOG.unshift(obj);
+  save();closeM();renderLogistica();
 }
-async function delLog(id){
-  if(!confirm('Apagar?'))return;
-  await sbDelete('nv_logistica', id);
-  LOG=LOG.filter(function(x){return x.id!==id;});
-  renderLogistica();showToast('✓ Excluído!');
-}
+function delLog(id){if(!confirm('Apagar?'))return;LOG=LOG.filter(function(x){return x.id!==id;});save();renderLogistica();}
 
 // ══════════════════════════════════════════════════════════════════
 // EMPRESAS
@@ -1848,26 +1594,14 @@ function editEmp(id){
     +'</div>'
     +'<div class="mf"><button class="btn-sec" onclick="closeM()">Cancelar</button><button class="btn" onclick="salvarEmp()">Salvar</button></div>');
 }
-async function salvarEmp(){
+function salvarEmp(){
   var n=document.getElementById('eNome').value.trim();if(!n){alert('Informe o nome.');return;}
-  var id = window._editEmpId || Date.now();
-  var obj={id:id, nome:n, tipo:document.getElementById('eTipo').value,
-    contato:document.getElementById('eContato').value, obs:document.getElementById('eObs').value};
-  if(window._editEmpId){
-    await sbUpdate('nv_empresas', id, obj);
-    var idx=EMP.findIndex(function(x){return x.id===id;});if(idx>=0)EMP[idx]=obj;
-  } else {
-    await sbInsert('nv_empresas', obj);
-    EMP.push(obj);
-  }
-  showToast('✓ Empresa salva!');closeM();renderEmpresas();syncEmpFiltros();syncCafeEmp();
+  var obj={id:window._editEmpId||Date.now(),nome:n,tipo:document.getElementById('eTipo').value,contato:document.getElementById('eContato').value,obs:document.getElementById('eObs').value};
+  if(window._editEmpId){var idx=EMP.findIndex(function(x){return x.id===window._editEmpId;});if(idx>=0)EMP[idx]=obj;}
+  else EMP.push(obj);
+  save();closeM();renderEmpresas();syncEmpFiltros();syncCafeEmp();
 }
-async function delEmp(id){
-  if(!confirm('Apagar empresa?'))return;
-  await sbDelete('nv_empresas', id);
-  EMP=EMP.filter(function(x){return x.id!==id;});
-  renderEmpresas();syncEmpFiltros();syncCafeEmp();showToast('✓ Excluído!');
-}
+function delEmp(id){if(!confirm('Apagar empresa?'))return;EMP=EMP.filter(function(x){return x.id!==id;});save();renderEmpresas();syncEmpFiltros();syncCafeEmp();}
 
 // ══════════════════════════════════════════════════════════════════
 // USUÁRIOS
@@ -1931,7 +1665,7 @@ function editUsuario(id){
     +'</div>'
     +'<div class="mf"><button class="btn-sec" onclick="closeM()">Cancelar</button><button class="btn btn-purple" onclick="salvarUsuario()">Salvar</button></div>');
 }
-async function salvarUsuario(){
+function salvarUsuario(){
   var nome=document.getElementById('uNome').value.trim();
   var login=document.getElementById('uLogin').value.trim().toLowerCase();
   var senha=document.getElementById('uSenha').value;
@@ -1939,27 +1673,22 @@ async function salvarUsuario(){
   if(!nome||!login){alert('Preencha nome e login.');return;}
   var users=getUsuarios();
   if(!window._editUserId&&!senha){alert('Informe a senha.');return;}
-  if(senha&&senha.length<4){alert('Senha mínimo 4 caracteres.');return;}
+  if(senha&&senha.length<4){alert('Senha deve ter pelo menos 4 caracteres.');return;}
   if(!window._editUserId&&users.find(function(u){return u.login===login;})){alert('Login já em uso.');return;}
   if(window._editUserId){
-    var upd={nome:nome, login:login, role:role};
-    if(senha) upd.senha = senha;
-    await sbUpdate('nv_usuarios', window._editUserId, upd);
-    var idx=window._nsUsuarios.findIndex(function(u){return u.id===window._editUserId;});
-    if(idx>=0) Object.assign(window._nsUsuarios[idx], upd);
+    var idx=users.findIndex(function(u){return u.id===window._editUserId;});
+    if(idx>=0){users[idx].nome=nome;users[idx].login=login;users[idx].role=role;if(senha)users[idx].senha=senha;}
   } else {
-    var newUser={id:'u'+Date.now(), login:login, senha:senha, nome:nome, role:role};
-    await sbInsert('nv_usuarios', newUser);
-    window._nsUsuarios = window._nsUsuarios || [];
-    window._nsUsuarios.push(newUser);
+    users.push({id:'u'+Date.now(),login:login,senha:senha,nome:nome,role:role});
   }
-  closeM();renderUsuarios();showToast('✓ Usuário salvo!');
+  localStorage.setItem('nv_USERS',JSON.stringify(users));
+  closeM();renderUsuarios();showToast('Usuário salvo!');
 }
-async function delUsuario(id){
+function delUsuario(id){
   if(!confirm('Apagar usuário?'))return;
-  await sbDelete('nv_usuarios', id);
-  window._nsUsuarios=(window._nsUsuarios||[]).filter(function(u){return u.id!==id;});
-  renderUsuarios();showToast('✓ Usuário removido.');
+  var users=getUsuarios().filter(function(u){return u.id!==id;});
+  localStorage.setItem('nv_USERS',JSON.stringify(users));
+  renderUsuarios();showToast('Usuário removido.');
 }
 
 // ══════════════════════════════════════════════════════════════════
@@ -2127,56 +1856,28 @@ function closeM(){document.getElementById('modalOv').classList.remove('open');do
 // ══════════════════════════════════════════════════════════════════
 // INIT
 // ══════════════════════════════════════════════════════════════════
-async function init(){
-  console.log('Iniciando init...');
-  try {
-    load();
-    carregarCores();
-    var t=localStorage.getItem('nv_theme')||'light';
-    setTheme(t);
-    document.getElementById('tbDate').textContent=new Date().toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
-    document.getElementById('fRefData').value=hoje;
-    document.getElementById('fCafeData').value=hoje;
-    document.getElementById('fAlimData').value=hoje;
-    document.getElementById('fLogData').value=hoje;
-    document.getElementById('relData').value=hoje;
-    document.getElementById('fAlimMes').value=hoje.slice(0,7);
-    document.getElementById('fEstMes').value=hoje.slice(0,7);
-    
-    // Carregar todos os dados do Supabase
-    console.log('Chamando carregarTudo...');
-    await carregarTudo();
-    
-    // Garantir HOSS padrão
-    if(!EMP.find(function(e){return e.nome==='Construtora HOSS';})){
-      var hoss={id:Date.now()+1, nome:'Construtora HOSS', tipo:'Construtora', contato:'', obs:'Tem direito a janta'};
-      try { await sbInsert('nv_empresas', hoss); } catch(e) { console.error('Erro ao inserir HOSS:', e); }
-      EMP.push(hoss);
-    }
-    
-    console.log('Sincronizando filtros...');
-    syncEmpFiltros();
-    syncCafeEmp();
-    
-    console.log('Renderizando painel...');
-    renderPainel();
-    renderEmpresas();
-    console.log('Init concluído com sucesso.');
-  } catch(err) {
-    console.error('ERRO CRÍTICO NO INIT:', err);
-    alert('Erro ao carregar o sistema: ' + err.message);
-    // Tentar renderizar o que for possível
-    try { renderPainel(); renderEmpresas(); } catch(e) {}
+function init(){
+  var t=localStorage.getItem('nv_theme')||'light';
+  setTheme(t);
+  load();
+  carregarCores();
+  document.getElementById('tbDate').textContent=new Date().toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
+  document.getElementById('fRefData').value=hoje;
+  document.getElementById('fCafeData').value=hoje;
+  document.getElementById('fAlimData').value=hoje;
+  document.getElementById('fLogData').value=hoje;
+  document.getElementById('relData').value=hoje;
+  document.getElementById('fAlimMes').value=hoje.slice(0,7);
+  document.getElementById('fEstMes').value=hoje.slice(0,7);
+  if(!EMP.find(function(e){return e.nome==='Construtora HOSS';})){
+    EMP.push({id:Date.now()+1,nome:'Construtora HOSS',tipo:'Construtora',contato:'',obs:'Tem direito a janta'});save();
   }
+  syncEmpFiltros();syncCafeEmp();
+  renderPainel();renderEmpresas();
 }
 
-// Aplicar tema salvo antes do login aparecer
-(function(){
-  var t=localStorage.getItem('nv_theme')||'light';
-  document.documentElement.setAttribute('data-theme',t);
-  // Garantir admin padrão disponível imediatamente
-  window._nsUsuarios=[{id:'u0',login:'admin',senha:'nutrivaz123',nome:'Administrador',role:'admin'}];
-})();
+// Carregar tema antes do login
+(function(){var t=localStorage.getItem('nv_theme')||'light';document.documentElement.setAttribute('data-theme',t);})();
 </script>
 </body>
 </html>
