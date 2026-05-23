@@ -1,1 +1,1152 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nutrivaz — Gestão de Alimentação</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+
+/* ── TEMA CLARO ── */
+:root,[data-theme="light"]{
+  --navy:#0F2044;--navy2:#1A3060;--navy3:#243A7A;
+  --org:#F47920;--org2:#E86A10;--org3:#FF9A45;--org-dim:#FFF0E0;
+  --navy-dim:#E8EDF8;
+  --bg:#F4F6FB;--bg1:#fff;--bg2:#F8FAFC;--bg3:#EFF3F7;
+  --tx:#0F172A;--tx2:#374151;--tx3:#6B7280;
+  --bdr:rgba(0,0,0,.08);--bdr2:rgba(0,0,0,.14);
+  --green:#16A34A;--red:#DC2626;--yellow:#CA8A04;
+  --green-dim:#DCFCE7;--red-dim:#FEE2E2;--yellow-dim:#FEF9C3;
+  --purple:#7C3AED;--purple-dim:#EDE9FE;
+  --cyan:#0891B2;--cyan-dim:#CFFAFE;
+  --shadow:0 1px 4px rgba(0,0,0,.08);
+  --font:'Segoe UI',system-ui,sans-serif;--radius:10px;
+  --card-bg:#fff;--modal-bg:#fff;--input-bg:#f9fafb;
+  --topbar-bg:var(--navy);--nav-bg:var(--navy2);
+}
+
+/* ── TEMA ESCURO ── */
+[data-theme="dark"]{
+  --bg:#0D1117;--bg1:#161B22;--bg2:#21262D;--bg3:#30363D;
+  --tx:#E6EDF3;--tx2:#8B949E;--tx3:#6E7681;
+  --bdr:rgba(255,255,255,.08);--bdr2:rgba(255,255,255,.14);
+  --navy-dim:#1C2333;--org-dim:#2D1B0E;
+  --green-dim:#0D2818;--red-dim:#2D0A0A;--yellow-dim:#2D2200;
+  --purple-dim:#1E1033;--cyan-dim:#0A2030;
+  --shadow:0 1px 8px rgba(0,0,0,.4);
+  --card-bg:#161B22;--modal-bg:#21262D;--input-bg:#0D1117;
+  --topbar-bg:#010409;--nav-bg:#0D1117;
+}
+
+html,body{min-height:100%;background:var(--bg);font-family:var(--font);color:var(--tx);}
+body{display:flex;flex-direction:column;}
+
+/* TOPBAR */
+.topbar{background:var(--topbar-bg);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:60px;flex-shrink:0;box-shadow:0 2px 8px rgba(0,0,0,.3);}
+.tb-left{display:flex;align-items:center;gap:10px;}
+.tb-logo{width:40px;height:40px;border-radius:8px;overflow:hidden;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid rgba(255,255,255,.15);flex-shrink:0;}
+.tb-logo img{width:40px;height:40px;object-fit:contain;display:none;}
+.tb-logo-icon{font-size:20px;}
+.tb-brand{color:var(--org);font-size:16px;font-weight:700;display:block;letter-spacing:.02em;}
+.tb-sub{color:rgba(255,255,255,.45);font-size:10px;display:block;margin-top:1px;}
+.tb-right{display:flex;align-items:center;gap:8px;}
+.tb-date{color:rgba(255,255,255,.55);font-size:10px;}
+.tb-badge{background:var(--org);color:#fff;font-size:10px;padding:2px 9px;border-radius:12px;font-weight:700;}
+.tb-user{display:flex;align-items:center;gap:6px;background:rgba(255,255,255,.08);border-radius:20px;padding:4px 10px;cursor:pointer;border:1px solid rgba(255,255,255,.12);}
+.tb-user-name{color:rgba(255,255,255,.85);font-size:11px;font-weight:600;}
+.tb-user-role{font-size:9px;padding:1px 6px;border-radius:10px;font-weight:700;}
+.role-dev{background:#7C3AED;color:#fff;}
+.role-admin{background:#DC2626;color:#fff;}
+.role-user{background:#16A34A;color:#fff;}
+.btn-theme{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.8);border-radius:8px;padding:5px 9px;cursor:pointer;font-size:14px;transition:all .15s;}
+.btn-theme:hover{background:rgba(255,255,255,.16);}
+
+/* NAV */
+.nav{background:var(--nav-bg);display:flex;padding:0 20px;gap:2px;flex-shrink:0;overflow-x:auto;border-bottom:2px solid var(--org);}
+.nb{padding:11px 14px;font-size:11px;font-weight:600;color:rgba(255,255,255,.5);border:none;background:transparent;cursor:pointer;border-bottom:3px solid transparent;font-family:var(--font);white-space:nowrap;transition:all .15s;margin-bottom:-2px;}
+.nb:hover{color:rgba(255,255,255,.8);}
+.nb.on{color:#fff;border-bottom-color:var(--org);background:rgba(255,255,255,.06);}
+.nb.hidden{display:none;}
+
+/* MAIN */
+.main{padding:18px 20px;flex:1;overflow-y:auto;}
+.sec{display:none;}.sec.on{display:block;}
+
+/* CARDS KPI */
+.kpi-row{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:12px;}
+.kpi{background:var(--card-bg);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);border-left:4px solid var(--org);}
+.kpi.navy{border-left-color:var(--navy3);}
+.kpi.green{border-left-color:var(--green);}
+.kpi.red{border-left-color:var(--red);}
+.kpi-label{font-size:9px;font-weight:600;color:var(--tx3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:5px;}
+.kpi-val{font-size:26px;font-weight:700;color:var(--navy);font-family:monospace;}
+[data-theme="dark"] .kpi-val{color:var(--tx);}
+.kpi-val.org{color:var(--org);}
+.kpi-val.grn{color:var(--green);}
+.kpi-val.red{color:var(--red);}
+.kpi-sub{font-size:10px;color:var(--tx3);margin-top:3px;}
+
+/* CHARTS */
+.chart-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px;}
+.ccard{background:var(--card-bg);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);}
+.ccard h3{font-size:10px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px;display:flex;align-items:center;gap:5px;}
+[data-theme="dark"] .ccard h3{color:var(--org3);}
+.ccard h3 span{width:4px;height:12px;background:var(--org);border-radius:2px;display:inline-block;}
+
+/* TABLE */
+.twrap{background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden;margin-bottom:14px;}
+.thead-bar{padding:12px 14px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bdr);gap:8px;flex-wrap:wrap;background:var(--bg2);}
+.thead-bar h2{font-size:13px;font-weight:700;color:var(--navy);}
+[data-theme="dark"] .thead-bar h2{color:var(--org3);}
+.frow{display:flex;gap:6px;align-items:center;flex-wrap:wrap;}
+.frow select,.frow input[type=text],.frow input[type=date],.frow input[type=month]{font-size:11px;padding:5px 8px;border:1px solid var(--bdr2);border-radius:6px;background:var(--card-bg);color:var(--tx);font-family:var(--font);height:30px;}
+table{width:100%;border-collapse:collapse;font-size:12px;}
+th{padding:8px 10px;text-align:left;font-size:9px;font-weight:700;color:var(--navy);text-transform:uppercase;letter-spacing:.06em;border-bottom:2px solid var(--org);background:var(--navy-dim);}
+[data-theme="dark"] th{color:var(--org3);background:var(--bg2);}
+td{padding:8px 10px;border-bottom:1px solid var(--bdr);color:var(--tx);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--org-dim);}
+[data-theme="dark"] tr:hover td{background:var(--bg3);}
+.td-act{display:flex;gap:4px;align-items:center;}
+
+/* BADGES */
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:10px;font-weight:700;}
+.b-cafe{background:var(--yellow-dim);color:var(--yellow);}
+.b-alm{background:var(--org-dim);color:var(--org2);}
+.b-jan{background:var(--navy-dim);color:var(--navy);}
+[data-theme="dark"] .b-jan{color:var(--org3);}
+.b-ext{background:var(--green-dim);color:var(--green);}
+.b-low{background:var(--red-dim);color:var(--red);}
+.b-ok{background:var(--green-dim);color:var(--green);}
+
+/* BUTTONS */
+.btn{background:var(--org);color:#fff;border:none;border-radius:8px;padding:7px 14px;font-size:11px;font-weight:700;cursor:pointer;font-family:var(--font);height:30px;display:inline-flex;align-items:center;gap:5px;transition:background .15s;}
+.btn:hover{background:var(--org2);}
+.btn-navy{background:var(--navy);color:#fff;}
+.btn-navy:hover{background:var(--navy2);}
+.btn-green{background:var(--green);color:#fff;}
+.btn-purple{background:var(--purple);color:#fff;}
+.btn-sec{background:var(--card-bg);color:var(--tx2);border:1px solid var(--bdr2);border-radius:8px;padding:5px 11px;font-size:11px;cursor:pointer;font-family:var(--font);height:30px;display:inline-flex;align-items:center;gap:5px;}
+.btn-sec:hover{background:var(--bg2);}
+.btn-sm{padding:3px 8px;font-size:10px;border-radius:5px;cursor:pointer;font-family:var(--font);border:none;font-weight:600;}
+.btn-edit{background:var(--bg3);color:var(--navy);border:1px solid var(--bdr2);}
+[data-theme="dark"] .btn-edit{background:var(--bg2);color:var(--tx);}
+.btn-del{background:var(--red-dim);color:var(--red);border:1px solid #FECACA;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:1000;align-items:center;justify-content:center;padding:16px;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--modal-bg);border-radius:14px;width:660px;max-width:100%;max-height:92vh;overflow-y:auto;box-shadow:0 20px 60px rgba(0,0,0,.3);border-top:4px solid var(--org);}
+.mh{padding:14px 18px 10px;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:var(--modal-bg);z-index:1;border-bottom:1px solid var(--bdr);}
+.mh h3{font-size:14px;font-weight:700;color:var(--navy);}
+[data-theme="dark"] .mh h3{color:var(--org3);}
+.mclose{background:none;border:none;cursor:pointer;color:var(--tx3);font-size:22px;line-height:1;}
+.mb{padding:16px 18px;}
+.mf{padding:10px 18px;border-top:1px solid var(--bdr);background:var(--bg2);border-radius:0 0 14px 14px;display:flex;justify-content:flex-end;gap:8px;}
+.frow2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.fl{display:block;font-size:9px;font-weight:700;color:var(--tx3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:4px;}
+.fi{width:100%;padding:8px 10px;border:1px solid var(--bdr2);border-radius:7px;background:var(--input-bg);color:var(--tx);font-size:13px;font-family:var(--font);}
+.fi:focus{outline:none;border-color:var(--org);background:var(--card-bg);}
+textarea.fi{min-height:65px;resize:vertical;}
+.fm{margin-bottom:12px;}
+
+/* TOTAL BOX */
+.total-box{background:linear-gradient(135deg,var(--navy),var(--navy3));border-radius:var(--radius);padding:14px;color:#fff;margin-bottom:12px;}
+[data-theme="dark"] .total-box{background:linear-gradient(135deg,#010409,#0D1117);}
+.total-box-title{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;opacity:.7;margin-bottom:7px;}
+.total-box-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;}
+.total-item{text-align:center;}
+.total-num{font-size:20px;font-weight:700;color:var(--org3);font-family:monospace;}
+.total-lbl{font-size:9px;opacity:.7;margin-top:2px;}
+
+/* FILTRO */
+.filtro-bar{background:var(--card-bg);border-radius:var(--radius);padding:10px 14px;box-shadow:var(--shadow);margin-bottom:12px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;}
+.filtro-bar label{font-size:10px;font-weight:700;color:var(--navy);}
+[data-theme="dark"] .filtro-bar label{color:var(--org3);}
+.filtro-btn{padding:4px 12px;border-radius:20px;border:2px solid var(--bdr2);background:var(--card-bg);font-size:10px;font-weight:600;cursor:pointer;font-family:var(--font);color:var(--tx3);transition:all .15s;}
+.filtro-btn.on{background:var(--org);color:#fff;border-color:var(--org);}
+
+/* LOGIN */
+.login-wrap{position:fixed;inset:0;background:linear-gradient(135deg,var(--navy) 0%,var(--navy3) 100%);display:flex;align-items:center;justify-content:center;z-index:9999;padding:20px;}
+.login-box{background:#fff;border-radius:16px;padding:32px 28px;width:100%;max-width:360px;box-shadow:0 20px 60px rgba(0,0,0,.35);}
+.login-logo{text-align:center;margin-bottom:22px;}
+.login-logo .emo{font-size:40px;}
+.login-logo h1{font-size:22px;font-weight:800;color:var(--navy);margin-top:6px;}
+.login-logo p{font-size:11px;color:#6B7280;margin-top:2px;}
+.login-field{margin-bottom:14px;}
+.login-field label{display:block;font-size:10px;font-weight:700;color:#6B7280;text-transform:uppercase;letter-spacing:.6px;margin-bottom:5px;}
+.login-field input{width:100%;padding:10px 12px;border:2px solid #E5E7EB;border-radius:9px;font-size:14px;font-family:inherit;color:#0F172A;transition:border-color .2s;}
+.login-field input:focus{outline:none;border-color:var(--org);}
+.login-error{display:none;background:var(--red-dim);color:var(--red);padding:10px 12px;border-radius:8px;margin-bottom:14px;font-size:12px;font-weight:600;}
+.btn-login{width:100%;padding:11px;background:var(--org);color:#fff;border:none;border-radius:9px;font-size:14px;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;font-family:inherit;box-shadow:0 4px 14px rgba(244,121,32,.4);}
+.btn-login:hover{background:var(--org2);}
+
+/* UTILS */
+.empty{text-align:center;padding:36px;color:var(--tx3);font-size:12px;}
+.toast{position:fixed;bottom:16px;right:16px;background:var(--green);color:#fff;border-radius:8px;padding:9px 16px;font-size:11px;font-weight:600;z-index:2000;display:none;box-shadow:0 4px 12px rgba(0,0,0,.2);}
+.sec-title{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:12px;display:flex;align-items:center;gap:7px;}
+[data-theme="dark"] .sec-title{color:var(--org3);}
+.sec-title::before{content:'';width:4px;height:16px;background:var(--org);border-radius:2px;display:inline-block;}
+
+@media(max-width:768px){
+  .kpi-row{grid-template-columns:repeat(2,1fr);}
+  .total-box-grid{grid-template-columns:repeat(2,1fr);}
+  .chart-row{grid-template-columns:1fr;}
+  .frow2{grid-template-columns:1fr;}
+}
+</style>
+</head>
+<body>
+
+<!-- ══════════════════════════════════════════════════ LOGIN ══ -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <div class="login-logo">
+      <div class="emo">🍽️</div>
+      <h1>Nutrivaz</h1>
+      <p>Gestão de Alimentação</p>
+    </div>
+    <div class="login-error" id="loginErr"></div>
+    <div class="login-field">
+      <label>Usuário</label>
+      <input type="text" id="loginUser" placeholder="seu.usuario" autocapitalize="none">
+    </div>
+    <div class="login-field">
+      <label>Senha</label>
+      <input type="password" id="loginPass" placeholder="••••••" onkeydown="if(event.key==='Enter')doLogin()">
+    </div>
+    <button class="btn-login" onclick="doLogin()">🔑 Entrar</button>
+    <p style="text-align:center;margin-top:14px;font-size:10px;color:#9CA3AF">Admin: <b>admin</b> / <b>nutrivaz123</b></p>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════════════════ APP ══ -->
+<div id="appWrap" style="display:none;flex-direction:column;min-height:100vh">
+
+<div class="topbar">
+  <div class="tb-left">
+    <div class="tb-logo" title="Configurações">
+      <span class="tb-logo-icon">🍽️</span>
+    </div>
+    <div>
+      <span class="tb-brand" id="topNome">Nutrivaz</span>
+      <span class="tb-sub" id="topObra">Gestão de Alimentação</span>
+    </div>
+  </div>
+  <div class="tb-right">
+    <span class="tb-date" id="tbDate"></span>
+    <span class="tb-badge" id="tbTotalHoje">0 hoje</span>
+    <button class="btn-theme" onclick="toggleTheme()" id="btnTheme" title="Alternar tema">🌙</button>
+    <div class="tb-user">
+      <span id="tbUserName" class="tb-user-name">—</span>
+      <span id="tbUserRole" class="tb-user-role role-user">—</span>
+    </div>
+    <button class="btn-sec" onclick="doLogout()" style="font-size:10px;height:28px;padding:0 9px">Sair</button>
+  </div>
+</div>
+
+<nav class="nav">
+  <button class="nb on"  id="nb-painel"    onclick="go('painel')">📊 Painel</button>
+  <button class="nb"     id="nb-refeicoes" onclick="go('refeicoes')">🍽️ Refeições</button>
+  <button class="nb"     id="nb-cafe"      onclick="go('cafe')">☕ Café da Manhã</button>
+  <button class="nb"     id="nb-alimentos" onclick="go('alimentos')">🥩 Alimentos</button>
+  <button class="nb"     id="nb-estoque"   onclick="go('estoque')">📦 Estoque</button>
+  <button class="nb"     id="nb-logistica" onclick="go('logistica')">🚛 Logística</button>
+  <button class="nb"     id="nb-empresas"  onclick="go('empresas')">🏢 Empresas</button>
+  <button class="nb"     id="nb-relatorios"onclick="go('relatorios')">📄 Relatórios</button>
+  <button class="nb hidden" id="nb-usuarios" onclick="go('usuarios')">👥 Usuários</button>
+  <button class="nb"     id="nb-config"    onclick="go('config')">⚙️ Config</button>
+</nav>
+
+<div class="main">
+
+<!-- ══ PAINEL ══ -->
+<div class="sec on" id="sec-painel">
+  <div class="filtro-bar">
+    <label>Período:</label>
+    <button class="filtro-btn on" id="fpHoje"   onclick="setFiltroP('hoje')">Hoje</button>
+    <button class="filtro-btn"    id="fpSemana" onclick="setFiltroP('semana')">Semana</button>
+    <button class="filtro-btn"    id="fpMes"    onclick="setFiltroP('mes')">Mês</button>
+  </div>
+  <div class="total-box">
+    <div class="total-box-title" id="pTotalTitle">Total do período</div>
+    <div class="total-box-grid">
+      <div class="total-item"><div class="total-num" id="pCafe">0</div><div class="total-lbl">Cafés da Manhã</div></div>
+      <div class="total-item"><div class="total-num" id="pAlmoco">0</div><div class="total-lbl">Almoços</div></div>
+      <div class="total-item"><div class="total-num" id="pJanta">0</div><div class="total-lbl">Jantas (HOSS)</div></div>
+      <div class="total-item"><div class="total-num" id="pExtras">0</div><div class="total-lbl">Extras Pagos</div></div>
+      <div class="total-item"><div class="total-num" id="pValor">R$0</div><div class="total-lbl">Valor Total</div></div>
+    </div>
+  </div>
+  <div class="kpi-row">
+    <div class="kpi cyan"><div class="kpi-label">Cafés Hoje</div><div class="kpi-val cyn" id="kCafeHoje">0</div><div class="kpi-sub">manhã</div></div>
+    <div class="kpi"><div class="kpi-label">Func. Nutrivaz</div><div class="kpi-val org" id="kFuncNutrivaz">0</div><div class="kpi-sub">servindo</div></div>
+    <div class="kpi navy"><div class="kpi-label">Func. Almoçando</div><div class="kpi-val" id="kFuncAlm">0</div><div class="kpi-sub">total</div></div>
+    <div class="kpi green"><div class="kpi-label">Empresas Ativas</div><div class="kpi-val grn" id="kEmpresas">0</div><div class="kpi-sub">no período</div></div>
+    <div class="kpi red"><div class="kpi-label">Km Rodados</div><div class="kpi-val red" id="kKm">0</div><div class="kpi-sub">no período</div></div>
+  </div>
+</div>
+
+<!-- ══ REFEIÇÕES ══ -->
+<div class="sec" id="sec-refeicoes">
+  <div class="twrap">
+    <div class="thead-bar">
+      <h2>Registro de Refeições</h2>
+      <div class="frow">
+        <input type="date" id="fRefData" onchange="renderRefeicoes()">
+        <button class="btn" onclick="abrirNovaRefeicao()">+ Nova refeição</button>
+      </div>
+    </div>
+    <div id="tblRef"></div>
+  </div>
+</div>
+
+<!-- ══ CAFÉ DA MANHÃ ══ -->
+<div class="sec" id="sec-cafe">
+  <div class="twrap">
+    <div class="thead-bar">
+      <h2>☕ Café da Manhã</h2>
+      <div class="frow">
+        <input type="date" id="fCafeData" onchange="renderCafe()">
+        <button class="btn" style="background:var(--yellow);color:#000" onclick="abrirNovoCafe()">+ Registrar café</button>
+      </div>
+    </div>
+    <div id="tblCafe"></div>
+  </div>
+</div>
+
+<!-- ══ ALIMENTOS ══ -->
+<div class="sec" id="sec-alimentos">
+  <div class="thead-bar" style="background:var(--card-bg);border-radius:var(--radius);margin-bottom:14px;box-shadow:var(--shadow);padding:10px 14px;">
+    <span class="sec-title" style="margin:0">Alimentos do Dia</span>
+    <div class="frow">
+      <input type="date" id="fAlimData" onchange="renderAlimentos()">
+      <button class="btn" onclick="abrirNovoAlimento()">+ Registrar alimento</button>
+    </div>
+  </div>
+  <div id="tblAlim"></div>
+</div>
+
+<!-- ══ ESTOQUE ══ -->
+<div class="sec" id="sec-estoque">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:8px">
+    <span class="sec-title">📦 Controle de Estoque</span>
+    <button class="btn btn-green" onclick="abrirNovoEstoque()">+ Adicionar item</button>
+  </div>
+  <div id="estGrid"><div class="empty">Nenhum item no estoque.</div></div>
+</div>
+
+<!-- ══ LOGÍSTICA ══ -->
+<div class="sec" id="sec-logistica">
+  <div class="twrap">
+    <div class="thead-bar">
+      <h2>Logística de Veículos</h2>
+      <div class="frow">
+        <input type="date" id="fLogData" onchange="renderLogistica()">
+        <button class="btn" onclick="abrirNovaLogistica()">+ Registrar km</button>
+      </div>
+    </div>
+    <div id="tblLog"></div>
+  </div>
+</div>
+
+<!-- ══ EMPRESAS ══ -->
+<div class="sec" id="sec-empresas">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+    <span class="sec-title">Empresas Cadastradas</span>
+    <button class="btn" onclick="abrirNovaEmpresa()">+ Nova empresa</button>
+  </div>
+  <div id="empGrid"><div class="empty">Nenhuma empresa cadastrada.</div></div>
+</div>
+
+<!-- ══ RELATÓRIOS ══ -->
+<div class="sec" id="sec-relatorios">
+  <div style="background:var(--card-bg);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:14px;">
+    <h3 style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--org);display:flex;align-items:center;gap:7px;">📄 Gerar Relatório</h3>
+    <div class="frow2">
+      <div class="fm"><label class="fl">Período</label>
+        <select class="fi" id="relPeriodo">
+          <option value="diario">Diário</option><option value="semanal">Semanal</option><option value="mensal" selected>Mensal</option>
+        </select>
+      </div>
+      <div class="fm"><label class="fl">Data de referência</label><input type="date" class="fi" id="relData"></div>
+    </div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" onclick="gerarRelatorio()">📄 Gerar PDF</button>
+      <button class="btn-sec" onclick="exportBackup()">💾 Backup JSON</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ CONFIG ══ -->
+<div class="sec" id="sec-config">
+  <div style="background:var(--card-bg);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow);margin-bottom:14px;">
+    <h3 style="font-size:12px;font-weight:700;color:var(--navy);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--org);display:flex;align-items:center;gap:7px;">⚙️ Configurações</h3>
+    <div class="frow2">
+      <div class="fm"><label class="fl">Nome da Empresa</label><input class="fi" id="cfgNome" placeholder="Nutrivaz"></div>
+      <div class="fm"><label class="fl">Obra/Projeto</label><input class="fi" id="cfgObra" placeholder="Gestão de Alimentação"></div>
+    </div>
+    <div class="frow2">
+      <div class="fm"><label class="fl">Valor Café (R$)</label><input class="fi" type="number" step="0.01" id="cfgValCafe" placeholder="0.00"></div>
+      <div class="fm"><label class="fl">Valor Almoço (R$)</label><input class="fi" type="number" step="0.01" id="cfgValAlm" placeholder="0.00"></div>
+    </div>
+    <div class="fm"><label class="fl">Valor Janta (R$)</label><input class="fi" type="number" step="0.01" id="cfgValJan" placeholder="0.00"></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:16px">
+      <button class="btn" onclick="salvarConfig()">💾 Salvar</button>
+      <button class="btn-sec" onclick="resetarConfig()">↻ Padrão</button>
+    </div>
+  </div>
+</div>
+
+</div>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOv">
+  <div class="modal" id="modalBox"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════════
+// SUPABASE INIT
+// ══════════════════════════════════════════════════════════════════
+const SUPA_URL='https://zmehnhbpvymdddnzgtkr.supabase.co';
+const SUPA_KEY='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imh1YnJ0dmtpemhoZHlyd2hlbXpvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzk0ODUyMDAsImV4cCI6MjA5NTA2MTIwMH0.1uqlrTJxVOMSpzR8DzBh1h2siFvPmnW_DA8CTYGzzmk';
+const sb=supabase.createClient(SUPA_URL,SUPA_KEY);
+
+// ══════════════════════════════════════════════════════════════════
+// GLOBAL STATE
+// ══════════════════════════════════════════════════════════════════
+let REF=[], CAFE=[], ALIM=[], LOG=[], EMP=[], EST=[];
+let CFG={nome:'Nutrivaz',obra:'Gestão de Alimentação de Obra',valCafe:0,valAlm:0,valJan:0};
+let authUser=null;
+const hoje=new Date().toISOString().slice(0,10);
+
+// ══════════════════════════════════════════════════════════════════
+// AUTH
+// ══════════════════════════════════════════════════════════════════
+async function getUsuarios(){
+  try{
+    const{data}=await sb.from('usuarios').select('*');
+    let users=data||[];
+    if(!users.find(u=>u.login==='admin')){
+      const admin={id:'u0',login:'admin',senha:'nutrivaz123',nome:'Administrador',role:'admin'};
+      await sb.from('usuarios').upsert(admin);
+      users.unshift(admin);
+    }
+    if(!users.find(u=>u.login==='dev')){
+      const dev={id:'u_dev',login:'dev',senha:'dev2024',nome:'Desenvolvedor',role:'dev'};
+      await sb.from('usuarios').upsert(dev);
+      users.push(dev);
+    }
+    return users;
+  }catch(e){
+    console.error('Erro ao buscar usuários:',e);
+    return[];
+  }
+}
+
+async function doLogin(){
+  const login=document.getElementById('loginUser').value.trim().toLowerCase();
+  const senha=document.getElementById('loginPass').value;
+  if(!login||!senha){
+    document.getElementById('loginErr').style.display='block';
+    document.getElementById('loginErr').textContent='Preencha usuário e senha.';
+    return;
+  }
+  const users=await getUsuarios();
+  const user=users.find(u=>u.login.toLowerCase()===login&&u.senha===senha);
+  if(!user){
+    document.getElementById('loginErr').style.display='block';
+    document.getElementById('loginErr').textContent='Usuário ou senha incorretos.';
+    document.getElementById('loginPass').value='';
+    return;
+  }
+  document.getElementById('loginErr').style.display='none';
+  authUser=user;
+  document.getElementById('loginWrap').style.display='none';
+  document.getElementById('appWrap').style.display='flex';
+  document.getElementById('tbUserName').textContent=user.nome.split(' ')[0];
+  document.getElementById('tbUserRole').textContent=user.role==='dev'?'Dev':user.role==='admin'?'Admin':'Usuário';
+  document.getElementById('tbUserRole').className='tb-user-role role-'+(user.role==='dev'?'dev':user.role==='admin'?'admin':'user');
+  const nbU=document.getElementById('nb-usuarios');
+  if(nbU)nbU.className=(user.role==='admin'||user.role==='dev')?'nb':'nb hidden';
+  await init();
+}
+
+function doLogout(){
+  if(!confirm('Sair do sistema?'))return;
+  authUser=null;
+  document.getElementById('appWrap').style.display='none';
+  document.getElementById('loginWrap').style.display='flex';
+  document.getElementById('loginUser').value='';
+  document.getElementById('loginPass').value='';
+}
+
+// ══════════════════════════════════════════════════════════════════
+// TEMA
+// ══════════════════════════════════════════════════════════════════
+function setTheme(t){
+  document.documentElement.setAttribute('data-theme',t);
+  localStorage.setItem('nv_theme',t);
+  document.getElementById('btnTheme').textContent=t==='dark'?'☀️':'🌙';
+}
+function toggleTheme(){
+  const cur=document.documentElement.getAttribute('data-theme');
+  setTheme(cur==='dark'?'light':'dark');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// PERSIST
+// ══════════════════════════════════════════════════════════════════
+async function save(){
+  try{
+    if(REF.length)await sb.from('refeicoes').upsert(REF.map(r=>({id:r.id,data:r.data,empresa:r.empresa,func_nutrivaz:r.funcNutrivaz||0,func_alm:r.funcAlm||0,qtd_alm:r.qtdAlm||0,qtd_jan:r.qtdJan||0,qtd_ext:r.qtdExt||0,val_alm:r.valAlm||0,val_jan:r.valJan||0,obs:r.obs||'',criado_por:r.criadoPor||'',criado_em:r.criadoEm||'',editado_por:r.editadoPor||'',editado_em:r.editadoEm||''})));
+    if(CAFE.length)await sb.from('cafes').upsert(CAFE.map(c=>({id:c.id,data:c.data,empresa:c.empresa,qtd:c.qtd||0,itens:c.itens||'',val_cafe:c.valCafe||0,obs:c.obs||'',criado_por:c.criadoPor||'',criado_em:c.criadoEm||''})));
+    if(ALIM.length)await sb.from('alimentos').upsert(ALIM.map(a=>({id:a.id,data:a.data,nome:a.nome,unidade:a.unidade,qtd:a.qtd||0,perda:a.perda||0,obs:a.obs||''})));
+    if(LOG.length)await sb.from('logistica').upsert(LOG.map(l=>({id:l.id,data:l.data,veiculo:l.veiculo||'',motorista:l.motorista||'',km_saida:l.kmSaida||0,km_chegada:l.kmChegada||0,km_rodado:l.kmRodado||0,destino:l.destino||'',obs:l.obs||''})));
+    if(EMP.length)await sb.from('empresas').upsert(EMP.map(e=>({id:e.id,nome:e.nome,tipo:e.tipo||'',contato:e.contato||'',obs:e.obs||''})));
+    if(EST.length)await sb.from('estoque').upsert(EST.map(e=>({id:e.id,nome:e.nome,categoria:e.categoria||'',unidade:e.unidade||'',qtd_atual:e.qtdAtual||0,qtd_minima:e.qtdMinima||0})));
+    await sb.from('config').upsert({id:1,dados:CFG});
+    localStorage.setItem('nv_REF',JSON.stringify(REF));
+    localStorage.setItem('nv_CAFE',JSON.stringify(CAFE));
+    localStorage.setItem('nv_ALIM',JSON.stringify(ALIM));
+    localStorage.setItem('nv_LOG',JSON.stringify(LOG));
+    localStorage.setItem('nv_EMP',JSON.stringify(EMP));
+    localStorage.setItem('nv_EST',JSON.stringify(EST));
+    localStorage.setItem('nv_CFG',JSON.stringify(CFG));
+    showToast('Salvo ✓');
+  }catch(e){
+    console.error('Erro ao salvar:',e);
+    showToast('Erro ao salvar!');
+  }
+}
+
+async function load(){
+  try{
+    const[r1,r2,r3,r4,r5,r6,r7]=await Promise.all([
+      sb.from('refeicoes').select('*'),
+      sb.from('cafes').select('*'),
+      sb.from('alimentos').select('*'),
+      sb.from('logistica').select('*'),
+      sb.from('empresas').select('*'),
+      sb.from('estoque').select('*'),
+      sb.from('config').select('*').eq('id',1).single(),
+    ]);
+    if(r1.data&&r1.data.length)REF=r1.data.map(r=>({id:r.id,data:r.data,empresa:r.empresa,funcNutrivaz:r.func_nutrivaz,funcAlm:r.func_alm,qtdAlm:r.qtd_alm,qtdJan:r.qtd_jan,qtdExt:r.qtd_ext,valAlm:r.val_alm,valJan:r.val_jan,obs:r.obs,criadoPor:r.criado_por,criadoEm:r.criado_em,editadoPor:r.editado_por,editadoEm:r.editado_em}));
+    else{const lr=localStorage.getItem('nv_REF');if(lr)REF=JSON.parse(lr);}
+    if(r2.data&&r2.data.length)CAFE=r2.data.map(c=>({id:c.id,data:c.data,empresa:c.empresa,qtd:c.qtd,itens:c.itens,valCafe:c.val_cafe,obs:c.obs,criadoPor:c.criado_por,criadoEm:c.criado_em}));
+    else{const lc=localStorage.getItem('nv_CAFE');if(lc)CAFE=JSON.parse(lc);}
+    if(r3.data&&r3.data.length)ALIM=r3.data.map(a=>({id:a.id,data:a.data,nome:a.nome,unidade:a.unidade,qtd:a.qtd,perda:a.perda,obs:a.obs}));
+    else{const la=localStorage.getItem('nv_ALIM');if(la)ALIM=JSON.parse(la);}
+    if(r4.data&&r4.data.length)LOG=r4.data.map(l=>({id:l.id,data:l.data,veiculo:l.veiculo,motorista:l.motorista,kmSaida:l.km_saida,kmChegada:l.km_chegada,kmRodado:l.km_rodado,destino:l.destino,obs:l.obs}));
+    else{const ll=localStorage.getItem('nv_LOG');if(ll)LOG=JSON.parse(ll);}
+    if(r5.data&&r5.data.length)EMP=r5.data.map(e=>({id:e.id,nome:e.nome,tipo:e.tipo,contato:e.contato,obs:e.obs}));
+    else{const le=localStorage.getItem('nv_EMP');if(le)EMP=JSON.parse(le);}
+    if(r6.data&&r6.data.length)EST=r6.data.map(e=>({id:e.id,nome:e.nome,categoria:e.categoria,unidade:e.unidade,qtdAtual:e.qtd_atual,qtdMinima:e.qtd_minima}));
+    else{const les=localStorage.getItem('nv_EST');if(les)EST=JSON.parse(les);}
+    if(r7.data&&r7.data.dados){CFG=r7.data.dados;aplicarConfig();}
+    else{const lcfg=localStorage.getItem('nv_CFG');if(lcfg){CFG=JSON.parse(lcfg);aplicarConfig();}}
+  }catch(ex){
+    console.error('Erro ao carregar do Supabase, usando localStorage:',ex);
+    const r=localStorage.getItem('nv_REF');if(r)REF=JSON.parse(r);
+    const ca=localStorage.getItem('nv_CAFE');if(ca)CAFE=JSON.parse(ca);
+    const a=localStorage.getItem('nv_ALIM');if(a)ALIM=JSON.parse(a);
+    const l=localStorage.getItem('nv_LOG');if(l)LOG=JSON.parse(l);
+    const e=localStorage.getItem('nv_EMP');if(e)EMP=JSON.parse(e);
+    const es=localStorage.getItem('nv_EST');if(es)EST=JSON.parse(es);
+    const c=localStorage.getItem('nv_CFG');if(c){CFG=JSON.parse(c);aplicarConfig();}
+  }
+}
+
+// ══════════════════════════════════════════════════════════════════
+// CONFIG
+// ══════════════════════════════════════════════════════════════════
+function aplicarConfig(){
+  document.getElementById('topNome').textContent=CFG.nome||'Nutrivaz';
+  document.getElementById('topObra').textContent=CFG.obra||'';
+  document.title=(CFG.nome||'Nutrivaz')+' — Gestão de Alimentação';
+  const els={cfgNome:CFG.nome||'',cfgObra:CFG.obra||'',cfgValCafe:CFG.valCafe||'',cfgValAlm:CFG.valAlm||'',cfgValJan:CFG.valJan||''};
+  Object.keys(els).forEach(k=>{const el=document.getElementById(k);if(el)el.value=els[k];});
+}
+
+function salvarConfig(){
+  CFG.nome=document.getElementById('cfgNome').value||'Nutrivaz';
+  CFG.obra=document.getElementById('cfgObra').value||'';
+  CFG.valCafe=parseFloat(document.getElementById('cfgValCafe').value)||0;
+  CFG.valAlm=parseFloat(document.getElementById('cfgValAlm').value)||0;
+  CFG.valJan=parseFloat(document.getElementById('cfgValJan').value)||0;
+  save();aplicarConfig();showToast('Configurações salvas!');
+}
+
+function resetarConfig(){
+  CFG={nome:'Nutrivaz',obra:'Gestão de Alimentação de Obra',valCafe:0,valAlm:0,valJan:0};
+  save();aplicarConfig();showToast('Configurações restauradas!');
+}
+
+// ══════════════════════════════════════════════════════════════════
+// UI HELPERS
+// ══════════════════════════════════════════════════════════════════
+function go(sec){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.getElementById('sec-'+sec).classList.add('on');
+  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('nb-'+sec).classList.add('on');
+}
+
+function openModal(html){
+  document.getElementById('modalBox').innerHTML=html;
+  document.getElementById('modalOv').classList.add('open');
+}
+
+function closeM(){
+  document.getElementById('modalOv').classList.remove('open');
+  document.getElementById('modalBox').innerHTML='';
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.style.display='block';
+  clearTimeout(window._tt);
+  window._tt=setTimeout(()=>{t.style.display='none';},2000);
+}
+
+function formatData(d){
+  if(!d)return'';
+  const p=d.split('-');
+  if(p.length===3)return p[2]+'/'+p[1]+'/'+p[0];
+  return d;
+}
+
+// ══════════════════════════════════════════════════════════════════
+// REFEIÇÕES
+// ══════════════════════════════════════════════════════════════════
+function renderRefeicoes(){
+  const fd=document.getElementById('fRefData').value;
+  const list=REF.filter(r=>!fd||r.data===fd).sort((a,b)=>b.data.localeCompare(a.data)||b.id-a.id);
+  const c=document.getElementById('tblRef');
+  if(!list.length){c.innerHTML='<div class="empty">Nenhum registro encontrado.</div>';return;}
+  let h='<div style="overflow-x:auto"><table><thead><tr><th>Data</th><th>Empresa</th><th>Almoços</th><th>Jantas</th><th>Extras</th><th>Ações</th></tr></thead><tbody>';
+  list.forEach(r=>{
+    h+='<tr><td style="white-space:nowrap;font-weight:600">'+formatData(r.data)+'</td>'
+      +'<td>'+r.empresa+'</td>'
+      +'<td style="text-align:right">'+r.qtdAlm+'</td>'
+      +'<td style="text-align:right">'+r.qtdJan+'</td>'
+      +'<td style="text-align:right">'+r.qtdExt+'</td>'
+      +'<td><div class="td-act"><button class="btn-sm btn-edit" onclick="editRef('+r.id+')">Editar</button><button class="btn-sm btn-del" onclick="delRef('+r.id+')">Apagar</button></div></td>'
+      +'</tr>';
+  });
+  h+='</tbody></table></div>';
+  c.innerHTML=h;
+}
+
+function abrirNovaRefeicao(){
+  window._editRefId=null;
+  openModal('<div class="mh"><h3>Nova refeição</h3><button class="mclose" onclick="closeM()">×</button></div>'
+    +'<div class="mb">'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">Data *</label><input class="fi" type="date" id="rData" value="'+hoje+'"></div>'
+    +'<div class="fm"><label class="fl">Empresa *</label><input class="fi" id="rEmpresa" placeholder="Ex: Construtora HOSS"></div>'
+    +'</div>'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">Almoços</label><input class="fi" type="number" id="rAlm" value="0"></div>'
+    +'<div class="fm"><label class="fl">Jantas</label><input class="fi" type="number" id="rJan" value="0"></div>'
+    +'</div>'
+    +'<div class="fm"><label class="fl">Extras</label><input class="fi" type="number" id="rExt" value="0"></div>'
+    +'</div>'
+    +'<div class="mf"><button class="btn-sec" onclick="closeM()">Cancelar</button><button class="btn" onclick="salvarRef()">Salvar</button></div>');
+}
+
+function editRef(id){
+  const r=REF.find(x=>x.id===id);if(!r)return;
+  window._editRefId=id;
+  openModal('<div class="mh"><h3>Editar refeição</h3><button class="mclose" onclick="closeM()">×</button></div>'
+    +'<div class="mb">'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">Data</label><input class="fi" type="date" id="rData" value="'+r.data+'"></div>'
+    +'<div class="fm"><label class="fl">Empresa</label><input class="fi" id="rEmpresa" value="'+r.empresa+'"></div>'
+    +'</div>'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">Almoços</label><input class="fi" type="number" id="rAlm" value="'+r.qtdAlm+'"></div>'
+    +'<div class="fm"><label class="fl">Jantas</label><input class="fi" type="number" id="rJan" value="'+r.qtdJan+'"></div>'
+    +'</div>'
+    +'<div class="fm"><label class="fl">Extras</label><input class="fi" type="number" id="rExt" value="'+r.qtdExt+'"></div>'
+    +'</div>'
+    +'<div class="mf"><button class="btn-sec" onclick="closeM()">Cancelar</button><button class="btn" onclick="salvarRef()">Salvar</button></div>');
+}
+
+function salvarRef(){
+  const data=document.getElementById('rData').value;
+  const empresa=document.getElementById('rEmpresa').value.trim();
+  if(!data||!empresa){alert('Preencha data e empresa.');return;}
+  const obj={id:window._editRefId||Date.now(),data,empresa,qtdAlm:parseInt(document.getElementById('rAlm').value)||0,qtdJan:parseInt(document.getElementById('rJan').value)||0,qtdExt:parseInt(document.getElementById('rExt').value)||0};
+  if(window._editRefId){const idx=REF.findIndex(x=>x.id===window._editRefId);if(idx>=0)REF[idx]=obj;}
+  else REF.push(obj);
+  save();closeM();renderRefeicoes();
+}
+
+async function delRef(id){
+  if(!confirm('Apagar refeição?'))return;
+  await sb.from('refeicoes').delete().eq('id',id);
+  REF=REF.filter(x=>x.id!==id);
+  save();renderRefeicoes();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// CAFÉ
+// ══════════════════════════════════════════════════════════════════
+function renderCafe(){
+  const fd=document.getElementById('fCafeData').value;
+  const list=CAFE.filter(c=>!fd||c.data===fd).sort((a,b)=>b.data.localeCompare(a.data)||b.id-a.id);
+  const c=document.getElementById('tblCafe');
+  if(!list.length){c.innerHTML='<div class="empty">Nenhum café registrado.</div>';return;}
+  let h='<div style="overflow-x:auto"><table><thead><tr><th>Data</th><th>Empresa</th><th>Qtd</th><th>Itens</th><th>Ações</th></tr></thead><tbody>';
+  list.forEach(cf=>{
+    h+='<tr><td style="white-space:nowrap;font-weight:600">'+formatData(cf.data)+'</td>'
+      +'<td>'+cf.empresa+'</td>'
+      +'<td style="text-align:right">'+cf.qtd+'</td>'
+      +'<td style="font-size:10px;color:var(--tx3)">'+(cf.itens||'—')+'</td>'
+      +'<td><div class="td-act"><button class="btn-sm btn-edit" onclick="editCafe('+cf.id+')">Editar</button><button class="btn-sm btn-del" onclick="delCafe('+cf.id+')">Apagar</button></div></td>'
+      +'</tr>';
+  });
+  h+='</tbody></table></div>';
+  c.innerHTML=h;
+}
+
+function abrirNovoCafe(){
+  window._editCafeId=null;
+  openModal('<div class="mh"><h3>Registrar café</h3><button class="mclose" onclick="closeM()">×</button></div>'
+    +'<div class="mb">'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">Data *</label><input class="fi" type="date" id="cData" value="'+hoje+'"></div>'
+    +'<div class="fm"><label class="fl">Empresa *</label><input class="fi" id="cEmpresa" placeholder="Ex: Construtora HOSS"></div>'
+    +'</div>'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">Quantidade *</label><input class="fi" type="number" id="cQtd" value="0"></div>'
+    +'<div class="fm"><label class="fl">Valor Unit. (R$)</label><input class="fi" type="number" step="0.01" id="cVal" value="0"></div>'
+    +'</div>'
+    +'<div class="fm"><label class="fl">Itens</label><input class="fi" id="cItens" placeholder="Ex: Pão, Manteiga, Café"></div>'
+    +'</div>'
+    +'<div class="mf"><button class="btn-sec" onclick="closeM()">Cancelar</button><button class="btn" style="background:var(--yellow);color:#000" onclick="salvarCafe()">Salvar</button></div>');
+}
+
+function editCafe(id){
+  const c=CAFE.find(x=>x.id===id);if(!c)return;
+  window._editCafeId=id;
+  openModal('<div class="mh"><h3>Editar café</h3><button class="mclose" onclick="closeM()">×</button></div>'
+    +'<div class="mb">'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">Data</label><input class="fi" type="date" id="cData" value="'+c.data+'"></div>'
+    +'<div class="fm"><label class="fl">Empresa</label><input class="fi" id="cEmpresa" value="'+c.empresa+'"></div>'
+    +'</div>'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">Quantidade</label><input class="fi" type="number" id="cQtd" value="'+c.qtd+'"></div>'
+    +'<div class="fm"><label class="fl">Valor Unit. (R$)</label><input class="fi" type="number" step="0.01" id="cVal" value="'+(c.valCafe||0)+'"></div>'
+    +'</div>'
+    +'<div class="fm"><label class="fl">Itens</label><input class="fi" id="cItens" value="'+(c.itens||'')+'"></div>'
+    +'</div>'
+    +'<div class="mf"><button class="btn-sec" onclick="closeM()">Cancelar</button><button class="btn" style="background:var(--yellow);color:#000" onclick="salvarCafe()">Salvar</button></div>');
+}
+
+function salvarCafe(){
+  const data=document.getElementById('cData').value;
+  const empresa=document.getElementById('cEmpresa').value.trim();
+  if(!data||!empresa){alert('Preencha data e empresa.');return;}
+  const obj={id:window._editCafeId||Date.now(),data,empresa,qtd:parseInt(document.getElementById('cQtd').value)||0,valCafe:parseFloat(document.getElementById('cVal').value)||0,itens:document.getElementById('cItens').value};
+  if(window._editCafeId){const idx=CAFE.findIndex(x=>x.id===window._editCafeId);if(idx>=0)CAFE[idx]=obj;}
+  else CAFE.push(obj);
+  save();closeM();renderCafe();
+}
+
+async function delCafe(id){
+  if(!confirm('Apagar café?'))return;
+  await sb.from('cafes').delete().eq('id',id);
+  CAFE=CAFE.filter(x=>x.id!==id);
+  save();renderCafe();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// ALIMENTOS
+// ══════════════════════════════════════════════════════════════════
+function renderAlimentos(){
+  const fd=document.getElementById('fAlimData').value;
+  const list=ALIM.filter(a=>!fd||a.data===fd).sort((a,b)=>b.data.localeCompare(a.data)||b.id-a.id);
+  const c=document.getElementById('tblAlim');
+  if(!list.length){c.innerHTML='<div class="empty">Nenhum alimento registrado.</div>';return;}
+  let h='<div style="overflow-x:auto"><table><thead><tr><th>Data</th><th>Alimento</th><th>Qtd</th><th>Unidade</th><th>Perda</th><th>Ações</th></tr></thead><tbody>';
+  list.forEach(a=>{
+    h+='<tr><td style="white-space:nowrap;font-weight:600">'+formatData(a.data)+'</td>'
+      +'<td>'+a.nome+'</td>'
+      +'<td style="text-align:right">'+a.qtd+'</td>'
+      +'<td>'+a.unidade+'</td>'
+      +'<td style="text-align:right">'+a.perda+' kg</td>'
+      +'<td><div class="td-act"><button class="btn-sm btn-edit" onclick="editAlim('+a.id+')">Editar</button><button class="btn-sm btn-del" onclick="delAlim('+a.id+')">Apagar</button></div></td>'
+      +'</tr>';
+  });
+  h+='</tbody></table></div>';
+  c.innerHTML=h;
+}
+
+function abrirNovoAlimento(){
+  window._editAlimId=null;
+  openModal('<div class="mh"><h3>Registrar alimento</h3><button class="mclose" onclick="closeM()">×</button></div>'
+    +'<div class="mb">'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">Data *</label><input class="fi" type="date" id="aData" value="'+hoje+'"></div>'
+    +'<div class="fm"><label class="fl">Alimento *</label><input class="fi" id="aNome" placeholder="Ex: Arroz"></div>'
+    +'</div>'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">Quantidade *</label><input class="fi" type="number" step="0.1" id="aQtd" value="0"></div>'
+    +'<div class="fm"><label class="fl">Unidade *</label><input class="fi" id="aUnidade" placeholder="Ex: kg"></div>'
+    +'</div>'
+    +'<div class="fm"><label class="fl">Perda/Sobra (kg)</label><input class="fi" type="number" step="0.1" id="aPerda" value="0"></div>'
+    +'</div>'
+    +'<div class="mf"><button class="btn-sec" onclick="closeM()">Cancelar</button><button class="btn" onclick="salvarAlim()">Salvar</button></div>');
+}
+
+function editAlim(id){
+  const a=ALIM.find(x=>x.id===id);if(!a)return;
+  window._editAlimId=id;
+  openModal('<div class="mh"><h3>Editar alimento</h3><button class="mclose" onclick="closeM()">×</button></div>'
+    +'<div class="mb">'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">Data</label><input class="fi" type="date" id="aData" value="'+a.data+'"></div>'
+    +'<div class="fm"><label class="fl">Alimento</label><input class="fi" id="aNome" value="'+a.nome+'"></div>'
+    +'</div>'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">Quantidade</label><input class="fi" type="number" step="0.1" id="aQtd" value="'+a.qtd+'"></div>'
+    +'<div class="fm"><label class="fl">Unidade</label><input class="fi" id="aUnidade" value="'+a.unidade+'"></div>'
+    +'</div>'
+    +'<div class="fm"><label class="fl">Perda/Sobra (kg)</label><input class="fi" type="number" step="0.1" id="aPerda" value="'+a.perda+'"></div>'
+    +'</div>'
+    +'<div class="mf"><button class="btn-sec" onclick="closeM()">Cancelar</button><button class="btn" onclick="salvarAlim()">Salvar</button></div>');
+}
+
+function salvarAlim(){
+  const data=document.getElementById('aData').value;
+  const nome=document.getElementById('aNome').value.trim();
+  if(!data||!nome){alert('Preencha data e alimento.');return;}
+  const obj={id:window._editAlimId||Date.now(),data,nome,qtd:parseFloat(document.getElementById('aQtd').value)||0,unidade:document.getElementById('aUnidade').value,perda:parseFloat(document.getElementById('aPerda').value)||0};
+  if(window._editAlimId){const idx=ALIM.findIndex(x=>x.id===window._editAlimId);if(idx>=0)ALIM[idx]=obj;}
+  else ALIM.push(obj);
+  save();closeM();renderAlimentos();
+}
+
+async function delAlim(id){
+  if(!confirm('Apagar alimento?'))return;
+  await sb.from('alimentos').delete().eq('id',id);
+  ALIM=ALIM.filter(x=>x.id!==id);
+  save();renderAlimentos();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// ESTOQUE
+// ══════════════════════════════════════════════════════════════════
+function renderEstoque(){
+  const c=document.getElementById('estGrid');
+  if(!EST.length){c.innerHTML='<div class="empty">Nenhum item no estoque.</div>';return;}
+  c.innerHTML=EST.map(e=>{
+    const atual=parseFloat(e.qtdAtual)||0;
+    const min=parseFloat(e.qtdMinima)||0;
+    const status=atual<=min?'low':atual<=min*1.5?'med':'ok';
+    return '<div style="background:var(--card-bg);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow);border-left:4px solid '+(status==='low'?'var(--red)':status==='med'?'var(--yellow)':'var(--green)')+'">'
+      +'<div style="font-size:13px;font-weight:700;color:var(--tx)">'+e.nome+'</div>'
+      +'<div style="font-size:9px;color:var(--tx3);margin-top:2px;text-transform:uppercase;font-weight:600">'+e.categoria+'</div>'
+      +'<div style="font-size:22px;font-weight:700;font-family:monospace;margin:6px 0;color:'+(status==='low'?'var(--red)':status==='med'?'var(--yellow)':'var(--green)')+'">'+atual.toFixed(1)+' '+e.unidade+'</div>'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px;padding-top:8px;border-top:1px solid var(--bdr);font-size:10px;color:var(--tx3)">'
+      +'<span>Mín: '+min.toFixed(1)+'</span>'
+      +'<div style="display:flex;gap:4px">'
+      +'<button class="btn-sm btn-edit" onclick="editEstoque('+e.id+')">Editar</button>'
+      +'<button class="btn-sm btn-del" onclick="delEstoque('+e.id+')">Apagar</button>'
+      +'</div></div></div>';
+  }).join('');
+}
+
+function abrirNovoEstoque(){
+  window._editEstId=null;
+  openModal('<div class="mh"><h3>Adicionar item</h3><button class="mclose" onclick="closeM()">×</button></div>'
+    +'<div class="mb">'
+    +'<div class="fm"><label class="fl">Nome *</label><input class="fi" id="estNome" placeholder="Ex: Arroz integral"></div>'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">Categoria</label><select class="fi" id="estCat"><option>Grãos e Cereais</option><option>Carnes e Aves</option><option>Hortifrúti</option><option>Laticínios</option><option>Bebidas</option><option>Descartáveis</option><option>Outros</option></select></div>'
+    +'<div class="fm"><label class="fl">Unidade *</label><input class="fi" id="estUn" placeholder="Ex: kg"></div>'
+    +'</div>'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">Qtd Atual *</label><input class="fi" type="number" step="0.1" id="estQtdAt" value="0"></div>'
+    +'<div class="fm"><label class="fl">Qtd Mínima</label><input class="fi" type="number" step="0.1" id="estQtdMin" value="0"></div>'
+    +'</div>'
+    +'</div>'
+    +'<div class="mf"><button class="btn-sec" onclick="closeM()">Cancelar</button><button class="btn btn-green" onclick="salvarEstoque()">Salvar</button></div>');
+}
+
+function editEstoque(id){
+  const e=EST.find(x=>x.id===id);if(!e)return;
+  window._editEstId=id;
+  openModal('<div class="mh"><h3>Editar item</h3><button class="mclose" onclick="closeM()">×</button></div>'
+    +'<div class="mb">'
+    +'<div class="fm"><label class="fl">Nome</label><input class="fi" id="estNome" value="'+e.nome+'"></div>'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">Categoria</label><select class="fi" id="estCat"><option'+(e.categoria==='Grãos e Cereais'?' selected':'')+'>Grãos e Cereais</option><option'+(e.categoria==='Carnes e Aves'?' selected':'')+'>Carnes e Aves</option><option'+(e.categoria==='Hortifrúti'?' selected':'')+'>Hortifrúti</option><option'+(e.categoria==='Laticínios'?' selected':'')+'>Laticínios</option><option'+(e.categoria==='Bebidas'?' selected':'')+'>Bebidas</option><option'+(e.categoria==='Descartáveis'?' selected':'')+'>Descartáveis</option><option'+(e.categoria==='Outros'?' selected':'')+'>Outros</option></select></div>'
+    +'<div class="fm"><label class="fl">Unidade</label><input class="fi" id="estUn" value="'+e.unidade+'"></div>'
+    +'</div>'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">Qtd Atual</label><input class="fi" type="number" step="0.1" id="estQtdAt" value="'+e.qtdAtual+'"></div>'
+    +'<div class="fm"><label class="fl">Qtd Mínima</label><input class="fi" type="number" step="0.1" id="estQtdMin" value="'+e.qtdMinima+'"></div>'
+    +'</div>'
+    +'</div>'
+    +'<div class="mf"><button class="btn-sec" onclick="closeM()">Cancelar</button><button class="btn btn-green" onclick="salvarEstoque()">Salvar</button></div>');
+}
+
+function salvarEstoque(){
+  const nome=document.getElementById('estNome').value.trim();if(!nome){alert('Informe o nome.');return;}
+  const obj={id:window._editEstId||Date.now(),nome,categoria:document.getElementById('estCat').value,unidade:document.getElementById('estUn').value,qtdAtual:parseFloat(document.getElementById('estQtdAt').value)||0,qtdMinima:parseFloat(document.getElementById('estQtdMin').value)||0};
+  if(window._editEstId){const idx=EST.findIndex(x=>x.id===window._editEstId);if(idx>=0)EST[idx]=obj;}
+  else EST.push(obj);
+  save();closeM();renderEstoque();
+}
+
+async function delEstoque(id){
+  if(!confirm('Apagar item do estoque?'))return;
+  await sb.from('estoque').delete().eq('id',id);
+  EST=EST.filter(x=>x.id!==id);
+  save();renderEstoque();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// LOGÍSTICA
+// ══════════════════════════════════════════════════════════════════
+function renderLogistica(){
+  const fd=document.getElementById('fLogData').value;
+  const list=LOG.filter(l=>!fd||l.data===fd).sort((a,b)=>b.data.localeCompare(a.data)||b.id-a.id);
+  const c=document.getElementById('tblLog');
+  const totalKm=list.reduce((s,l)=>s+(parseFloat(l.kmRodado)||0),0);
+  if(!list.length){c.innerHTML='<div class="empty">Nenhum registro encontrado.</div>';return;}
+  let h='<div style="overflow-x:auto"><table><thead><tr><th>Data</th><th>Veículo</th><th>Motorista</th><th>KM Saída</th><th>KM Chegada</th><th>KM Rodado</th><th>Ações</th></tr></thead><tbody>';
+  list.forEach(l=>{
+    h+='<tr><td style="white-space:nowrap;font-weight:600">'+formatData(l.data)+'</td>'
+      +'<td>'+l.veiculo+'</td><td>'+l.motorista+'</td>'
+      +'<td style="text-align:right">'+l.kmSaida+'</td>'
+      +'<td style="text-align:right">'+l.kmChegada+'</td>'
+      +'<td style="text-align:right;font-weight:700;color:var(--org)">'+l.kmRodado+' km</td>'
+      +'<td><div class="td-act"><button class="btn-sm btn-edit" onclick="editLog('+l.id+')">Editar</button><button class="btn-sm btn-del" onclick="delLog('+l.id+')">Apagar</button></div></td>'
+      +'</tr>';
+  });
+  h+='</tbody></table></div>';
+  h+='<div style="padding:8px 14px;background:var(--org-dim);font-weight:700;color:var(--org2);font-size:12px;border-top:1px solid var(--bdr)">Total: '+totalKm.toFixed(1)+' km rodados</div>';
+  c.innerHTML=h;
+}
+
+function abrirNovaLogistica(){
+  window._editLogId=null;
+  openModal('<div class="mh"><h3>Registrar km</h3><button class="mclose" onclick="closeM()">×</button></div>'
+    +'<div class="mb">'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">Data *</label><input class="fi" type="date" id="lData" value="'+hoje+'"></div>'
+    +'<div class="fm"><label class="fl">Veículo</label><input class="fi" id="lVeiculo" placeholder="Ex: Fiorino branca"></div>'
+    +'</div>'
+    +'<div class="fm"><label class="fl">Motorista</label><input class="fi" id="lMotorista" placeholder="Nome do motorista"></div>'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">KM de saída *</label><input class="fi" type="number" step="0.1" id="lKmSaida" placeholder="Ex: 45230"></div>'
+    +'<div class="fm"><label class="fl">KM de chegada *</label><input class="fi" type="number" step="0.1" id="lKmChegada" placeholder="Ex: 45510"></div>'
+    +'</div>'
+    +'</div>'
+    +'<div class="mf"><button class="btn-sec" onclick="closeM()">Cancelar</button><button class="btn" onclick="salvarLog()">Salvar</button></div>');
+}
+
+function editLog(id){
+  const l=LOG.find(x=>x.id===id);if(!l)return;
+  window._editLogId=id;
+  openModal('<div class="mh"><h3>Editar km</h3><button class="mclose" onclick="closeM()">×</button></div>'
+    +'<div class="mb">'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">Data</label><input class="fi" type="date" id="lData" value="'+l.data+'"></div>'
+    +'<div class="fm"><label class="fl">Veículo</label><input class="fi" id="lVeiculo" value="'+(l.veiculo||'')+'"></div>'
+    +'</div>'
+    +'<div class="fm"><label class="fl">Motorista</label><input class="fi" id="lMotorista" value="'+(l.motorista||'')+'"></div>'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">KM de saída</label><input class="fi" type="number" step="0.1" id="lKmSaida" value="'+l.kmSaida+'"></div>'
+    +'<div class="fm"><label class="fl">KM de chegada</label><input class="fi" type="number" step="0.1" id="lKmChegada" value="'+l.kmChegada+'"></div>'
+    +'</div>'
+    +'</div>'
+    +'<div class="mf"><button class="btn-sec" onclick="closeM()">Cancelar</button><button class="btn" onclick="salvarLog()">Salvar</button></div>');
+}
+
+function salvarLog(){
+  const s=parseFloat(document.getElementById('lKmSaida').value)||0;
+  const ch=parseFloat(document.getElementById('lKmChegada').value)||0;
+  if(!s||!ch){alert('Informe KM de saída e chegada.');return;}
+  const obj={id:window._editLogId||Date.now(),data:document.getElementById('lData').value||hoje,veiculo:document.getElementById('lVeiculo').value||'—',motorista:document.getElementById('lMotorista').value||'—',kmSaida:s,kmChegada:ch,kmRodado:(ch-s).toFixed(1)};
+  if(window._editLogId){const idx=LOG.findIndex(x=>x.id===window._editLogId);if(idx>=0)LOG[idx]=obj;}
+  else LOG.unshift(obj);
+  save();closeM();renderLogistica();
+}
+
+async function delLog(id){
+  if(!confirm('Apagar?'))return;
+  await sb.from('logistica').delete().eq('id',id);
+  LOG=LOG.filter(x=>x.id!==id);
+  save();renderLogistica();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// EMPRESAS
+// ══════════════════════════════════════════════════════════════════
+function renderEmpresas(){
+  const c=document.getElementById('empGrid');
+  if(!EMP.length){c.innerHTML='<div class="empty">Nenhuma empresa cadastrada.</div>';return;}
+  c.innerHTML=EMP.map(e=>{
+    const ini=e.nome.split(' ').map(w=>w[0]).slice(0,2).join('').toUpperCase();
+    return '<div style="background:var(--card-bg);border-radius:var(--radius);padding:14px;box-shadow:var(--shadow)">'
+      +'<div style="width:40px;height:40px;border-radius:9px;background:var(--navy);color:#fff;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;margin-bottom:9px">'+ini+'</div>'
+      +'<div style="font-size:13px;font-weight:700;color:var(--tx)">'+e.nome+'</div>'
+      +'<div style="font-size:10px;color:var(--tx3);margin-top:3px">'+(e.tipo||'')+(e.contato?' • '+e.contato:'')+'</div>'
+      +'<div style="display:flex;justify-content:space-between;align-items:center;margin-top:9px;padding-top:9px;border-top:1px solid var(--bdr)">'
+      +'<span style="font-size:10px;color:var(--tx3)">—</span>'
+      +'<div style="display:flex;gap:4px">'
+      +'<button class="btn-sm btn-edit" onclick="editEmp('+e.id+')">Editar</button>'
+      +'<button class="btn-sm btn-del" onclick="delEmp('+e.id+')">Apagar</button>'
+      +'</div></div></div>';
+  }).join('');
+}
+
+function abrirNovaEmpresa(){
+  window._editEmpId=null;
+  openModal('<div class="mh"><h3>Nova empresa</h3><button class="mclose" onclick="closeM()">×</button></div>'
+    +'<div class="mb">'
+    +'<div class="fm"><label class="fl">Nome *</label><input class="fi" id="eNome" placeholder="Ex: Construtora HOSS"></div>'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">Tipo</label><input class="fi" id="eTipo" placeholder="Ex: Construtora, Subempreiteira"></div>'
+    +'<div class="fm"><label class="fl">Contato</label><input class="fi" id="eContato" placeholder="(41) 99999-9999"></div>'
+    +'</div>'
+    +'<div class="fm"><label class="fl">Observação</label><textarea class="fi" id="eObs"></textarea></div>'
+    +'</div>'
+    +'<div class="mf"><button class="btn-sec" onclick="closeM()">Cancelar</button><button class="btn" onclick="salvarEmp()">Salvar</button></div>');
+}
+
+function editEmp(id){
+  const e=EMP.find(x=>x.id===id);if(!e)return;
+  window._editEmpId=id;
+  openModal('<div class="mh"><h3>Editar empresa</h3><button class="mclose" onclick="closeM()">×</button></div>'
+    +'<div class="mb">'
+    +'<div class="fm"><label class="fl">Nome *</label><input class="fi" id="eNome" value="'+e.nome+'"></div>'
+    +'<div class="frow2">'
+    +'<div class="fm"><label class="fl">Tipo</label><input class="fi" id="eTipo" value="'+(e.tipo||'')+'"></div>'
+    +'<div class="fm"><label class="fl">Contato</label><input class="fi" id="eContato" value="'+(e.contato||'')+'"></div>'
+    +'</div>'
+    +'<div class="fm"><label class="fl">Observação</label><textarea class="fi" id="eObs">'+(e.obs||'')+'</textarea></div>'
+    +'</div>'
+    +'<div class="mf"><button class="btn-sec" onclick="closeM()">Cancelar</button><button class="btn" onclick="salvarEmp()">Salvar</button></div>');
+}
+
+function salvarEmp(){
+  const n=document.getElementById('eNome').value.trim();if(!n){alert('Informe o nome.');return;}
+  const obj={id:window._editEmpId||Date.now(),nome:n,tipo:document.getElementById('eTipo').value,contato:document.getElementById('eContato').value,obs:document.getElementById('eObs').value};
+  if(window._editEmpId){const idx=EMP.findIndex(x=>x.id===window._editEmpId);if(idx>=0)EMP[idx]=obj;}
+  else EMP.push(obj);
+  save();closeM();renderEmpresas();
+}
+
+async function delEmp(id){
+  if(!confirm('Apagar empresa?'))return;
+  await sb.from('empresas').delete().eq('id',id);
+  EMP=EMP.filter(x=>x.id!==id);
+  save();renderEmpresas();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// RELATÓRIO
+// ══════════════════════════════════════════════════════════════════
+function gerarRelatorio(){
+  const periodo=document.getElementById('relPeriodo').value;
+  const data=document.getElementById('relData').value||hoje;
+  const doc=new window.jspdf.jsPDF({orientation:'p',unit:'mm',format:'a4'});
+  const W=210,mg=14,y_start=12;
+  const navy=[15,32,68],org=[244,121,32],branco=[255,255,255];
+  
+  doc.setFillColor(navy[0],navy[1],navy[2]);
+  doc.rect(0,0,W,34,'F');
+  doc.setFillColor(org[0],org[1],org[2]);
+  doc.rect(0,31,W,3,'F');
+  doc.setTextColor(org[0],org[1],org[2]);
+  doc.setFontSize(14);
+  doc.setFont('helvetica','bold');
+  doc.text(CFG.nome||'Nutrivaz',mg,14);
+  doc.setTextColor(branco[0],branco[1],branco[2]);
+  doc.setFontSize(9);
+  doc.setFont('helvetica','bold');
+  doc.text('RELATÓRIO DE ALIMENTAÇÃO',mg,27);
+  
+  doc.setFontSize(10);
+  doc.setFont('helvetica','normal');
+  doc.setTextColor(50,50,50);
+  doc.text('Período: '+periodo+' — '+data,mg,50);
+  doc.text('Gerado em: '+new Date().toLocaleString('pt-BR'),mg,58);
+  
+  const cafeTotal=CAFE.filter(c=>c.data===data).reduce((s,c)=>s+(parseInt(c.qtd)||0),0);
+  const almTotal=REF.filter(r=>r.data===data).reduce((s,r)=>s+(parseInt(r.qtdAlm)||0),0);
+  
+  doc.setFontSize(12);
+  doc.setFont('helvetica','bold');
+  doc.text('Resumo do Dia',mg,70);
+  doc.setFontSize(10);
+  doc.setFont('helvetica','normal');
+  doc.text('Cafés: '+cafeTotal,mg,80);
+  doc.text('Almoços: '+almTotal,mg,88);
+  
+  doc.save((CFG.nome||'Nutrivaz')+'_Relatorio_'+data.replace(/-/g,'')+'.pdf');
+  showToast('PDF gerado!');
+}
+
+function exportBackup(){
+  const b=new Blob([JSON.stringify({REF,CAFE,ALIM,LOG,EMP,EST,CFG},null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(b);
+  a.download='nutrivaz_backup_'+hoje.replace(/-/g,'')+'.json';
+  a.click();
+}
+
+// ══════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════
+async function init(){
+  const t=localStorage.getItem('nv_theme')||'light';
+  setTheme(t);
+  showToast('Carregando dados...');
+  await load();
+  aplicarConfig();
+  document.getElementById('tbDate').textContent=new Date().toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short',year:'numeric'});
+  document.getElementById('fRefData').value=hoje;
+  document.getElementById('fCafeData').value=hoje;
+  document.getElementById('fAlimData').value=hoje;
+  document.getElementById('fLogData').value=hoje;
+  document.getElementById('relData').value=hoje;
+  if(!EMP.find(e=>e.nome==='Construtora HOSS')){
+    EMP.push({id:Date.now()+1,nome:'Construtora HOSS',tipo:'Construtora',contato:'',obs:'Tem direito a janta'});
+    save();
+  }
+  renderRefeicoes();
+  renderCafe();
+  renderAlimentos();
+  renderEstoque();
+  renderLogistica();
+  renderEmpresas();
+  showToast('Pronto!');
+}
+
+// Auto-login para testes
+window.addEventListener('load',()=>{
+  document.getElementById('loginUser').value='admin';
+  document.getElementById('loginPass').value='nutrivaz123';
+});
+</script>
+
+</body>
+</html>
 
